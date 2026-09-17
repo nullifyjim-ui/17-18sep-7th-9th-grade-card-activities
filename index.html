@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CAN & COULD · Actividad interactiva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple:#6C3CE9;
+  --purple-dark:#4B21B8;
+  --pink:#FF3E88;
+  --yellow:#FFD23F;
+  --green:#06D6A0;
+  --blue:#118AB2;
+  --red:#FF5A5F;
+  --ink:#1B1035;
+  --cream:#FFF9F0;
+  --shadow: 0 8px 0 rgba(27,16,53,0.18);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  font-size:17px;
+  line-height:1.5;
+}
+h1,h2,h3,.display{font-family:'Fredoka',sans-serif;}
+h1{font-size:2rem;margin:0 0 8px;}
+h2{font-size:1.5rem;margin:0 0 10px;}
+h3{font-size:1.2rem;margin:0 0 8px;}
+p{margin:0 0 12px;}
+button{font-family:'Poppins',sans-serif;cursor:pointer;border:none;}
+.wrap{max-width:640px;margin:0 auto;padding:20px 18px 10px;}
+
+/* ---------- TOP BAR ---------- */
+.topbar{
+  background:linear-gradient(135deg,var(--purple),var(--pink));
+  color:#fff;
+  padding:16px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 4px 14px rgba(0,0,0,0.15);
+  position:sticky;top:0;z-index:50;
+}
+.topbar .logo{display:flex;align-items:center;gap:10px;}
+.topbar .logo span.icon{font-size:1.8rem;}
+.topbar h1{font-size:1.25rem;margin:0;letter-spacing:.3px;}
+.topbar .sub{font-size:.7rem;opacity:.9;margin:0;}
+
+/* ---------- PAGES ---------- */
+.page{display:none;animation:fadein .35s ease;}
+.page.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.gradetab{display:flex;gap:8px;margin:16px 0;}
+.gtabbtn{
+  flex:1;background:#F3EDFF;color:var(--purple-dark);font-weight:700;font-family:'Fredoka',sans-serif;
+  font-size:1.35rem;line-height:1.15;padding:16px 8px;border-radius:16px;text-align:center;transition:.15s;
+}
+.gtabbtn.active{background:var(--purple);color:#fff;box-shadow:var(--shadow);}
+.subpage{display:none;}
+.subpage.active{display:block;animation:fadein .3s ease;}
+
+/* ---------- NESTED QUESTION TABS (Grade 9) ---------- */
+.qtabs{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;}
+.qtabbtn{
+  flex:1 1 auto;min-width:120px;background:#EAF6F2;color:#0B6E52;font-weight:700;font-family:'Fredoka',sans-serif;
+  font-size:.85rem;padding:10px 8px;border-radius:14px;text-align:center;transition:.15s;border:2px solid transparent;
+}
+.qtabbtn.active{background:#0B6E52;color:#fff;box-shadow:var(--shadow);}
+.qsubpage{display:none;}
+.qsubpage.active{display:block;animation:fadein .3s ease;}
+
+.card{
+  background:#fff;border-radius:22px;padding:20px;margin-bottom:16px;
+  box-shadow:var(--shadow);border:2px solid #F0E9FF;
+}
+.card.green{border-color:#CFF7EC;}
+.card.yellow{border-color:#FFEFC2;}
+
+.warnbox{
+  background:#FFF1E0;border:2px solid #FFCE87;border-radius:18px;padding:14px 16px;
+  font-size:.88rem;margin:16px 0;display:flex;gap:10px;align-items:flex-start;
+}
+.warnbox .wi{font-size:1.4rem;}
+
+.finishbtn{
+  width:100%;margin-top:18px;padding:16px;border-radius:18px;background:var(--ink);color:#fff;
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.05rem;box-shadow:var(--shadow);
+}
+.finishbtn.secondary{background:#EFE7FB;color:var(--purple-dark);box-shadow:none;margin-top:14px;}
+.copybtn{background:#0B4F73;color:#fff;box-shadow:none;padding:22px 18px;font-size:1.35rem;line-height:1.3;border-radius:20px;}
+.copybtn:disabled{opacity:.6;}
+
+/* ---------- INTERACTIVE ACTIVITY ---------- */
+.nameinput{width:100%;padding:12px 14px;border-radius:14px;border:2px solid #E7DFF7;font-size:1rem;font-family:'Poppins',sans-serif;margin-top:8px;}
+.searchinput{width:100%;padding:10px 14px;border-radius:12px;border:2px solid #E7DFF7;font-size:.88rem;font-family:'Poppins',sans-serif;margin:8px 0;background:#fff;}
+.counterbadge{
+  display:inline-block;background:#0B6E52;color:#fff;font-size:.68rem;font-weight:700;
+  padding:3px 10px;border-radius:999px;vertical-align:middle;margin-left:4px;
+}
+.counterbadge.blue{background:#0B4F73;}
+.chipgrid{
+  display:flex;flex-wrap:wrap;gap:6px;
+  max-height:340px;overflow-y:auto;padding:6px;border-radius:14px;background:#FCFAFF;
+}
+.chip{padding:6px 12px;border-radius:999px;font-size:.78rem;font-weight:600;border:2px solid transparent;line-height:1.3;}
+.chip.selectable{cursor:pointer;border:2px solid #E7DFF7;background:#FAF7FF;color:#5c5470;transition:.15s;}
+.chip.selectable.selected{background:#0B6E52;color:#fff;border-color:#054A38;}
+.chip.hidden{display:none;}
+
+.couldscroll{max-height:380px;overflow-y:auto;padding:4px;border-radius:14px;background:#FCFAFF;}
+.couldrow{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#FAF7FF;border:2px solid #E7DFF7;border-radius:14px;padding:10px 12px;margin-bottom:8px;}
+.couldrow.hidden{display:none;}
+.couldrow .clabel{font-size:.85rem;font-weight:600;flex:1;}
+.couldrow .ctoggles{display:flex;gap:6px;flex-shrink:0;}
+.togglebtn{padding:7px 11px;border-radius:10px;font-size:.72rem;font-weight:700;background:#EFE7FB;color:#6b6480;}
+.togglebtn.yes.active{background:#0B4F73;color:#fff;}
+.togglebtn.no.active{background:var(--red);color:#fff;}
+
+.supercard{
+  margin-top:18px;border-radius:26px;padding:4px;
+  background:linear-gradient(135deg,var(--pink),var(--yellow),var(--purple),var(--blue));
+  box-shadow:var(--shadow);
+}
+.supercard-inner{
+  border-radius:22px;padding:22px;background:linear-gradient(165deg,var(--purple) 0%,var(--pink) 55%,#FF7A4D 100%);
+  color:#fff;position:relative;overflow:hidden;
+}
+.supercard-inner::before{
+  content:"⭐"; position:absolute; top:-10px; right:-6px; font-size:5rem; opacity:.12; transform:rotate(15deg);
+}
+.supercard-banner{
+  text-align:center;font-family:'Fredoka',sans-serif;font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
+  background:rgba(255,255,255,0.2);border-radius:999px;padding:5px 14px;display:inline-block;margin-bottom:10px;
+}
+.supercard h3{color:#fff;font-size:1.5rem;margin:0 0 4px;text-shadow:0 2px 4px rgba(0,0,0,0.2);}
+.supercard .sclevel{
+  display:inline-block;background:var(--yellow);color:var(--ink);
+  font-family:Arial,Helvetica,"Segoe UI",Roboto,sans-serif;font-weight:700;
+  font-size:.85rem;line-height:1.4;letter-spacing:normal;word-spacing:normal;padding:6px 14px;border-radius:999px;margin:8px 0 4px;
+}
+.supercard .scstats{display:flex;gap:10px;margin:10px 0 4px;flex-wrap:wrap;}
+.supercard .scstat{background:rgba(255,255,255,0.2);border-radius:14px;padding:8px 12px;font-size:.78rem;font-weight:700;flex:1;text-align:center;min-width:110px;}
+.supercard .scstat b{display:block;font-size:1.3rem;font-family:'Fredoka',sans-serif;}
+.supercard .scsection{margin-top:14px;}
+.supercard .sclabel{font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;opacity:.95;margin-bottom:6px;font-weight:700;}
+.supercard ul{margin:0;padding-left:0;list-style:none;}
+.supercard li{background:rgba(255,255,255,0.18);border-radius:10px;padding:9px 12px;margin-bottom:6px;font-size:.88rem;border-left:4px solid var(--yellow);}
+.supercard li.wrong-side{border-left-color:#FF8E8E;}
+.supercard .scfooter{margin-top:16px;font-size:.76rem;opacity:.95;text-align:center;background:rgba(255,255,255,0.15);border-radius:12px;padding:10px;}
+
+@media(min-width:720px){
+  body{font-size:18px;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <span class="icon">⚡</span>
+    <div>
+      <h1>CAN & COULD</h1>
+      <p class="sub">Súper Poderes del Inglés (English Superpowers)</p>
+    </div>
+  </div>
+</div>
+
+<section class="page active" id="page-activities">
+  <div class="wrap">
+    <h1>🎨 Actividad interactiva (Interactive Activity)</h1>
+    <div class="warnbox" style="background:#E3F3F8;border-color:#9ED9EF;">
+      <span class="wi">📸</span>
+      <div><b>Esta actividad SÍ debes enviarla (This activity you DO need to submit):</b> complétala, descarga tu tarjeta terminada como imagen JPG y envíasela a tu profesor por WhatsApp (complete it, download your finished card as a JPG image and send it to your teacher via WhatsApp).</div>
+    </div>
+    <div style="display:inline-flex;align-items:center;gap:10px;background:#E9FBEF;border:2px solid #25D366;border-radius:999px;padding:10px 20px;margin:12px 0 4px;font-family:'Fredoka',sans-serif;font-weight:700;color:#0B4F2E;font-size:1rem;">
+      <span style="font-size:1.3rem;">📱</span> WhatsApp Teacher: 3027477130
+    </div>
+
+    <div class="gradetab" id="gradeTabs">
+      <button class="gtabbtn active" data-grade="grade7">🏫 Grado 7° (7th Grade)</button>
+      <button class="gtabbtn" data-grade="grade9">🎓 Grado 9° (9th Grade)</button>
+    </div>
+
+    <!-- ============ GRADE 7 - CAN & COULD ============ -->
+    <div class="subpage active" id="grade7">
+      <div class="card">
+        <h2>🖊️ Tus datos (Your info)</h2>
+        <label style="font-size:.8rem;color:#6b6480;font-weight:600;">Nombre completo (Full name)</label>
+        <input type="text" id="studentNameInput" class="nameinput" placeholder="Escribe tu nombre completo (Write your full name)">
+        <label style="font-size:.8rem;color:#6b6480;font-weight:600;display:block;margin-top:12px;">Edad (Age)</label>
+        <input type="number" id="studentAgeInput" class="nameinput" placeholder="Escribe tu edad (Write your age)" min="1" max="99" style="max-width:140px;">
+      </div>
+
+      <!-- SUPERPOWER CARD -->
+      <div class="card yellow">
+        <h2>🦸 Mi tarjeta de súper poderes: CAN & COULD (My Superpower Card: CAN & COULD)</h2>
+        <p style="font-size:.85rem;color:#6b6480;">Selecciona lo que SÍ puedes hacer ahora con CAN, y marca si podías o no podías hacer cada cosa de pequeño/a con COULD. Hay 200 habilidades en cada lista — usa el buscador si quieres ir más rápido. Luego presiona "Generar tarjeta" (Select what you CAN do now, and mark whether you could or couldn't do each thing as a child. There are 200 abilities in each list — use the search box to go faster. Then press "Generate card").</p>
+
+        <h3 style="margin-top:16px;color:#0B7A5C;">✅ AHORA PUEDO... (NOW I CAN...) <span class="counterbadge" id="canCounter">0/200</span></h3>
+        <input type="text" class="searchinput" id="canSearch" placeholder="🔍 Buscar habilidad... (Search ability...)">
+        <div class="chipgrid" id="canChips"></div>
+
+        <h3 style="margin-top:22px;color:#0A5E7A;">🕰️ CUANDO ERA PEQUEÑO/A... (WHEN I WAS LITTLE...) <span class="counterbadge blue" id="couldCounter">0/200</span></h3>
+        <input type="text" class="searchinput" id="couldSearch" placeholder="🔍 Buscar habilidad... (Search ability...)">
+        <div id="couldList"></div>
+
+        <button class="finishbtn" id="btnGenerateCard" style="margin-top:16px;">🎴 Generar tarjeta (Generate card)</button>
+        <div id="superCardResult"></div>
+      </div>
+    </div>
+
+    <!-- ============ GRADE 9 - PAST SIMPLE ============ -->
+    <div class="subpage" id="grade9">
+      <div class="card">
+        <h2>🖊️ Tus datos (Your info)</h2>
+        <label style="font-size:.8rem;color:#6b6480;font-weight:600;">Nombre completo (Full name)</label>
+        <input type="text" id="studentNameInput9" class="nameinput" placeholder="Escribe tu nombre completo (Write your full name)">
+        <label style="font-size:.8rem;color:#6b6480;font-weight:600;display:block;margin-top:12px;">Edad (Age)</label>
+        <input type="number" id="studentAgeInput9" class="nameinput" placeholder="Escribe tu edad (Write your age)" min="1" max="99" style="max-width:140px;">
+      </div>
+
+      <!-- SUPERPOWER CARD -->
+      <div class="card yellow">
+        <h2>🦸 Mi tarjeta de súper poderes: PAST SIMPLE (My Superpower Card: PAST SIMPLE)</h2>
+        <p style="font-size:.85rem;color:#6b6480;">Recorre las 5 pestañas y marca si SÍ hiciste o NO hiciste cada acción en cada momento del tiempo. Cuando termines, presiona el botón de abajo UNA sola vez y se generará UNA tarjeta completa con todas tus respuestas de las 5 preguntas: oraciones <b>afirmativas</b>, <b>negativas</b> e <b>interrogativas con respuestas cortas</b> en pasado simple. Usa el buscador si quieres ir más rápido (Go through the 5 tabs and mark whether you DID or DIDN'T do each action at each point in time. When you finish, press the button below ONCE and ONE complete card will be generated with all your answers from the 5 questions: <b>affirmative</b>, <b>negative</b>, and <b>interrogative with short answer</b> sentences in the simple past. Use the search box to go faster).</p>
+
+        <div class="qtabs" id="questionTabs9">
+          <button class="qtabbtn active" data-q="q1">📅 ¿Qué hiciste AYER? (Yesterday)</button>
+          <button class="qtabbtn" data-q="q2">🎉 ¿Qué hiciste el FIN DE SEMANA pasado? (Last weekend)</button>
+          <button class="qtabbtn" data-q="q3">📆 ¿Qué hiciste la SEMANA pasada? (Last week)</button>
+          <button class="qtabbtn" data-q="q4">🗓️ ¿Qué hiciste el MES pasado? (Last month)</button>
+          <button class="qtabbtn" data-q="q5">📅 ¿Qué hiciste el AÑO pasado? (Last year)</button>
+        </div>
+
+        <!-- Q1: YESTERDAY -->
+        <div class="qsubpage active" id="q1">
+          <h3 style="margin-top:4px;color:#0B7A5C;">📅 ¿QUÉ HICISTE AYER? (WHAT DID YOU DO YESTERDAY?) <span class="counterbadge" id="q1Counter">0/100</span></h3>
+          <input type="text" class="searchinput" id="q1Search" placeholder="🔍 Buscar acción... (Search action...)">
+          <div id="q1List"></div>
+        </div>
+
+        <!-- Q2: LAST WEEKEND -->
+        <div class="qsubpage" id="q2">
+          <h3 style="margin-top:4px;color:#0B7A5C;">🎉 ¿QUÉ HICISTE EL FIN DE SEMANA PASADO? (WHAT DID YOU DO LAST WEEKEND?) <span class="counterbadge" id="q2Counter">0/100</span></h3>
+          <input type="text" class="searchinput" id="q2Search" placeholder="🔍 Buscar acción... (Search action...)">
+          <div id="q2List"></div>
+        </div>
+
+        <!-- Q3: LAST WEEK -->
+        <div class="qsubpage" id="q3">
+          <h3 style="margin-top:4px;color:#0B7A5C;">📆 ¿QUÉ HICISTE LA SEMANA PASADA? (WHAT DID YOU DO LAST WEEK?) <span class="counterbadge" id="q3Counter">0/100</span></h3>
+          <input type="text" class="searchinput" id="q3Search" placeholder="🔍 Buscar acción... (Search action...)">
+          <div id="q3List"></div>
+        </div>
+
+        <!-- Q4: LAST MONTH -->
+        <div class="qsubpage" id="q4">
+          <h3 style="margin-top:4px;color:#0B7A5C;">🗓️ ¿QUÉ HICISTE EL MES PASADO? (WHAT DID YOU DO LAST MONTH?) <span class="counterbadge" id="q4Counter">0/100</span></h3>
+          <input type="text" class="searchinput" id="q4Search" placeholder="🔍 Buscar acción... (Search action...)">
+          <div id="q4List"></div>
+        </div>
+
+        <!-- Q5: LAST YEAR -->
+        <div class="qsubpage" id="q5">
+          <h3 style="margin-top:4px;color:#0B7A5C;">📅 ¿QUÉ HICISTE EL AÑO PASADO? (WHAT DID YOU DO LAST YEAR?) <span class="counterbadge" id="q5Counter">0/100</span></h3>
+          <input type="text" class="searchinput" id="q5Search" placeholder="🔍 Buscar acción... (Search action...)">
+          <div id="q5List"></div>
+        </div>
+
+        <button class="finishbtn" id="btnGenerateCard9" style="margin-top:16px;">🎴 Generar tarjeta completa (Generate complete card)</button>
+        <div id="superCardResult9"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ============ COPY CARD AS TEXT (shared by both grades) ============ */
+async function copyCardAsText(text, btn){
+  const originalText = btn ? btn.textContent : null;
+  if(btn){ btn.disabled = true; btn.textContent = '⏳ Copiando... (Copying...)'; }
+  try{
+    let copied = false;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      try{
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      }catch(err){ /* fall through to legacy method */ }
+    }
+    if(!copied){
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try{ copied = document.execCommand('copy'); }catch(err){ copied = false; }
+      document.body.removeChild(ta);
+    }
+    if(btn){ btn.textContent = copied ? '✅ ¡Copiado! Pégalo en WhatsApp (Copied! Paste it in WhatsApp)' : originalText; }
+    if(!copied){
+      alert('No se pudo copiar automáticamente. Selecciona y copia el texto manualmente. (Could not copy automatically. Please select and copy the text manually.)');
+    }
+  }catch(e){
+    alert('Ocurrió un error al copiar el texto. Intenta de nuevo. (An error occurred while copying the text. Please try again.)');
+  }finally{
+    if(btn){
+      setTimeout(()=>{ btn.disabled = false; btn.textContent = originalText; }, 2200);
+    }
+  }
+}
+
+/* ============ INTERACTIVE ACTIVITY ============ */
+const ABILITIES = [{en:"swim",es:"nadar",emoji:"🏊"},{en:"run fast",es:"correr rápido",emoji:"🏃"},{en:"jump rope",es:"saltar la cuerda",emoji:"🪀"},{en:"ride a bike",es:"montar en bicicleta",emoji:"🚴"},{en:"ride a skateboard",es:"montar en patineta",emoji:"🛹"},{en:"roller skate",es:"patinar",emoji:"🛼"},{en:"play soccer",es:"jugar fútbol",emoji:"⚽"},{en:"play basketball",es:"jugar baloncesto",emoji:"🏀"},{en:"play volleyball",es:"jugar voleibol",emoji:"🏐"},{en:"play tennis",es:"jugar tenis",emoji:"🎾"},{en:"play baseball",es:"jugar béisbol",emoji:"⚾"},{en:"play badminton",es:"jugar bádminton",emoji:"🏸"},{en:"play table tennis",es:"jugar ping pong",emoji:"🏓"},{en:"play golf",es:"jugar golf",emoji:"⛳"},{en:"do gymnastics",es:"hacer gimnasia",emoji:"🤸"},{en:"do a cartwheel",es:"hacer una rueda",emoji:"🤸‍♀️"},{en:"do a handstand",es:"hacer parada de manos",emoji:"🙆"},{en:"do yoga",es:"hacer yoga",emoji:"🧘"},{en:"box",es:"boxear",emoji:"🥊"},{en:"do karate",es:"hacer kárate",emoji:"🥋"},{en:"climb a mountain",es:"escalar una montaña",emoji:"🧗"},{en:"climb trees",es:"trepar árboles",emoji:"🌳"},{en:"hike",es:"caminar por senderos",emoji:"🥾"},{en:"swim underwater",es:"nadar bajo el agua",emoji:"🤿"},{en:"dive",es:"bucear",emoji:"🐠"},{en:"surf",es:"surfear",emoji:"🏄"},{en:"ski",es:"esquiar",emoji:"⛷️"},{en:"skate on ice",es:"patinar sobre hielo",emoji:"⛸️"},{en:"dance",es:"bailar",emoji:"💃"},{en:"do ballet",es:"hacer ballet",emoji:"🩰"},{en:"sing",es:"cantar",emoji:"🎤"},{en:"whistle",es:"silbar",emoji:"😗"},{en:"hum a tune",es:"tararear una canción",emoji:"🎵"},{en:"rap",es:"rapear",emoji:"🎙️"},{en:"beatbox",es:"hacer beatbox",emoji:"🔊"},{en:"act",es:"actuar",emoji:"🎭"},{en:"tell jokes",es:"contar chistes",emoji:"😂"},{en:"do magic tricks",es:"hacer trucos de magia",emoji:"🪄"},{en:"juggle",es:"hacer malabares",emoji:"🤹"},{en:"draw",es:"dibujar",emoji:"🎨"},{en:"paint",es:"pintar",emoji:"🖌️"},{en:"sculpt",es:"esculpir",emoji:"🗿"},{en:"do origami",es:"hacer origami",emoji:"📄"},{en:"sew",es:"coser",emoji:"🧵"},{en:"knit",es:"tejer",emoji:"🧶"},{en:"do makeup",es:"maquillarse",emoji:"💄"},{en:"style hair",es:"peinar",emoji:"💇"},{en:"take photos",es:"tomar fotos",emoji:"📷"},{en:"edit videos",es:"editar videos",emoji:"🎬"},{en:"make a short film",es:"hacer un cortometraje",emoji:"🎥"},{en:"play guitar",es:"tocar la guitarra",emoji:"🎸"},{en:"play piano",es:"tocar el piano",emoji:"🎹"},{en:"play violin",es:"tocar el violín",emoji:"🎻"},{en:"play drums",es:"tocar la batería",emoji:"🥁"},{en:"play flute",es:"tocar la flauta",emoji:"🎶"},{en:"compose music",es:"componer música",emoji:"🎼"},{en:"DJ",es:"hacer de DJ",emoji:"🎧"},{en:"write poems",es:"escribir poemas",emoji:"✍️"},{en:"write stories",es:"escribir cuentos",emoji:"📖"},{en:"write songs",es:"escribir canciones",emoji:"📝"},{en:"speak English",es:"hablar inglés",emoji:"🗣️"},{en:"speak French",es:"hablar francés",emoji:"🇫🇷"},{en:"speak Portuguese",es:"hablar portugués",emoji:"🇧🇷"},{en:"speak Italian",es:"hablar italiano",emoji:"🇮🇹"},{en:"read fast",es:"leer rápido",emoji:"📚"},{en:"memorize quickly",es:"memorizar rápido",emoji:"🧠"},{en:"do public speaking",es:"hablar en público",emoji:"🎙️"},{en:"debate",es:"debatir",emoji:"🗯️"},{en:"write essays",es:"escribir ensayos",emoji:"📃"},{en:"solve math problems",es:"resolver problemas de matemáticas",emoji:"📐"},{en:"solve puzzles",es:"resolver rompecabezas",emoji:"🧩"},{en:"play chess",es:"jugar ajedrez",emoji:"♟️"},{en:"play sudoku",es:"jugar sudoku",emoji:"🔢"},{en:"do science experiments",es:"hacer experimentos de ciencias",emoji:"🧪"},{en:"use a microscope",es:"usar un microscopio",emoji:"🔬"},{en:"code",es:"programar",emoji:"💻"},{en:"build a website",es:"crear una página web",emoji:"🌐"},{en:"build an app",es:"crear una aplicación",emoji:"📱"},{en:"use Excel",es:"usar Excel",emoji:"📊"},{en:"use PowerPoint",es:"usar PowerPoint",emoji:"📽️"},{en:"use Photoshop",es:"usar Photoshop",emoji:"🖼️"},{en:"type fast",es:"escribir rápido en el teclado",emoji:"⌨️"},{en:"research online",es:"investigar en internet",emoji:"🔎"},{en:"tutor others",es:"dar tutorías",emoji:"👩‍🏫"},{en:"cook",es:"cocinar",emoji:"🍳"},{en:"bake",es:"hornear",emoji:"🧁"},{en:"make a sandwich",es:"preparar un sándwich",emoji:"🥪"},{en:"use chopsticks",es:"usar palillos chinos",emoji:"🥢"},{en:"drive a car",es:"manejar un carro",emoji:"🚗"},{en:"ride a motorcycle",es:"manejar una moto",emoji:"🏍️"},{en:"fix a bike",es:"arreglar una bicicleta",emoji:"🔧"},{en:"fix a computer",es:"arreglar un computador",emoji:"🖥️"},{en:"plant a garden",es:"sembrar un jardín",emoji:"🌱"},{en:"take care of pets",es:"cuidar mascotas",emoji:"🐶"},{en:"babysit",es:"cuidar niños",emoji:"👶"},{en:"do laundry",es:"lavar la ropa",emoji:"🧺"},{en:"iron clothes",es:"planchar la ropa",emoji:"👕"},{en:"tie my shoes",es:"amarrarme los cordones",emoji:"👟"},{en:"tie knots",es:"hacer nudos",emoji:"🪢"},{en:"swim across a lake",es:"nadar a través de un lago",emoji:"🏞️"},{en:"play rugby",es:"jugar rugby",emoji:"🏉"},{en:"play cricket",es:"jugar críquet",emoji:"🏏"},{en:"play handball",es:"jugar balonmano",emoji:"🤾"},{en:"play water polo",es:"jugar waterpolo",emoji:"🤽"},{en:"do fencing",es:"hacer esgrima",emoji:"🤺"},{en:"do archery",es:"hacer tiro con arco",emoji:"🏹"},{en:"do wrestling",es:"hacer lucha libre",emoji:"🤼"},{en:"do taekwondo",es:"hacer taekwondo",emoji:"🥋"},{en:"do judo",es:"hacer judo",emoji:"🥋"},{en:"do capoeira",es:"hacer capoeira",emoji:"🤸‍♂️"},{en:"do pilates",es:"hacer pilates",emoji:"🧘‍♀️"},{en:"lift weights",es:"levantar pesas",emoji:"🏋️"},{en:"run a marathon",es:"correr un maratón",emoji:"🏃‍♀️"},{en:"do long jump",es:"hacer salto largo",emoji:"🦵"},{en:"do high jump",es:"hacer salto alto",emoji:"⬆️"},{en:"throw a frisbee",es:"lanzar un frisbee",emoji:"🥏"},{en:"do parkour",es:"hacer parkour",emoji:"🏃‍♂️"},{en:"go rock climbing",es:"escalar en roca",emoji:"🧗‍♀️"},{en:"paddleboard",es:"hacer paddleboard",emoji:"🏄‍♂️"},{en:"row a boat",es:"remar en un bote",emoji:"🚣"},{en:"kayak",es:"navegar en kayak",emoji:"🛶"},{en:"sail a boat",es:"navegar en velero",emoji:"⛵"},{en:"fish",es:"pescar",emoji:"🎣"},{en:"ride a horse",es:"montar a caballo",emoji:"🐎"},{en:"jump on a trampoline",es:"saltar en trampolín",emoji:"🤾‍♀️"},{en:"do a backflip",es:"hacer una vuelta hacia atrás",emoji:"🤸"},{en:"do a somersault",es:"hacer una voltereta",emoji:"🤸‍♀️"},{en:"play foosball",es:"jugar futbolín",emoji:"⚽"},{en:"play darts",es:"jugar dardos",emoji:"🎯"},{en:"play pool",es:"jugar billar",emoji:"🎱"},{en:"do arm wrestling",es:"hacer vencidas",emoji:"💪"},{en:"do a split",es:"hacer split",emoji:"🤸‍♂️"},{en:"touch my toes",es:"tocarme los pies",emoji:"🙆‍♀️"},{en:"balance on a beam",es:"balancearme en una viga",emoji:"🤸‍♀️"},{en:"play saxophone",es:"tocar el saxofón",emoji:"🎷"},{en:"play trumpet",es:"tocar la trompeta",emoji:"🎺"},{en:"play cello",es:"tocar el chelo",emoji:"🎻"},{en:"play harp",es:"tocar el arpa",emoji:"🎼"},{en:"play ukulele",es:"tocar el ukelele",emoji:"🎸"},{en:"play trombone",es:"tocar el trombón",emoji:"🎺"},{en:"play clarinet",es:"tocar el clarinete",emoji:"🎶"},{en:"conduct an orchestra",es:"dirigir una orquesta",emoji:"🎼"},{en:"do stand-up comedy",es:"hacer comedia en vivo",emoji:"🎤"},{en:"do improv",es:"hacer improvisación",emoji:"🎭"},{en:"do a puppet show",es:"hacer un show de títeres",emoji:"🧸"},{en:"do face painting",es:"pintar caritas",emoji:"🎨"},{en:"do pottery",es:"hacer cerámica",emoji:"🏺"},{en:"do woodworking",es:"hacer trabajos en madera",emoji:"🪵"},{en:"do embroidery",es:"hacer bordado",emoji:"🧵"},{en:"do graffiti art",es:"hacer arte urbano",emoji:"🎨"},{en:"do digital art",es:"hacer arte digital",emoji:"🖥️"},{en:"design clothes",es:"diseñar ropa",emoji:"👗"},{en:"do flower arranging",es:"hacer arreglos florales",emoji:"💐"},{en:"make candles",es:"hacer velas",emoji:"🕯️"},{en:"make jewelry",es:"hacer joyería",emoji:"💍"},{en:"speak German",es:"hablar alemán",emoji:"🇩🇪"},{en:"speak Mandarin",es:"hablar mandarín",emoji:"🇨🇳"},{en:"speak Japanese",es:"hablar japonés",emoji:"🇯🇵"},{en:"speak Arabic",es:"hablar árabe",emoji:"🇸🇦"},{en:"do calculus",es:"hacer cálculo",emoji:"📐"},{en:"do statistics",es:"hacer estadística",emoji:"📊"},{en:"do physics experiments",es:"hacer experimentos de física",emoji:"⚛️"},{en:"do chemistry experiments",es:"hacer experimentos de química",emoji:"🧫"},{en:"build a robot",es:"construir un robot",emoji:"🤖"},{en:"program a robot",es:"programar un robot",emoji:"🤖"},{en:"use a 3D printer",es:"usar una impresora 3D",emoji:"🖨️"},{en:"edit audio",es:"editar audio",emoji:"🎚️"},{en:"make a podcast",es:"hacer un pódcast",emoji:"🎙️"},{en:"animate cartoons",es:"animar caricaturas",emoji:"🎞️"},{en:"use AI tools",es:"usar herramientas de IA",emoji:"🤖"},{en:"manage a budget",es:"manejar un presupuesto",emoji:"💰"},{en:"write computer programs",es:"escribir programas de computador",emoji:"🖥️"},{en:"build video games",es:"crear videojuegos",emoji:"🎮"},{en:"do graphic design",es:"hacer diseño gráfico",emoji:"🖌️"},{en:"mix sound",es:"mezclar sonido",emoji:"🎚️"},{en:"translate documents",es:"traducir documentos",emoji:"📄"},{en:"proofread texts",es:"corregir textos",emoji:"🔍"},{en:"give a CPR/first aid",es:"dar primeros auxilios",emoji:"🩹"},{en:"change a car tire",es:"cambiar una llanta",emoji:"🚗"},{en:"do basic plumbing",es:"hacer plomería básica",emoji:"🔧"},{en:"do basic electrical work",es:"hacer trabajos eléctricos básicos",emoji:"🔌"},{en:"build a treehouse",es:"construir una casa en un árbol",emoji:"🏡"},{en:"pitch a tent",es:"armar una carpa",emoji:"⛺"},{en:"start a campfire safely",es:"encender una fogata con seguridad",emoji:"🔥"},{en:"use a compass",es:"usar una brújula",emoji:"🧭"},{en:"grow vegetables",es:"cultivar verduras",emoji:"🥕"},{en:"compost",es:"hacer compostaje",emoji:"🌿"},{en:"sew a button",es:"coser un botón",emoji:"🧵"},{en:"mend clothes",es:"remendar ropa",emoji:"🪡"},{en:"bake bread",es:"hornear pan",emoji:"🍞"},{en:"make pasta from scratch",es:"hacer pasta casera",emoji:"🍝"},{en:"decorate a cake",es:"decorar un pastel",emoji:"🎂"},{en:"brew coffee",es:"preparar café",emoji:"☕"},{en:"set a table properly",es:"poner la mesa correctamente",emoji:"🍽️"},{en:"plan a trip",es:"planear un viaje",emoji:"🗺️"},{en:"pack a suitcase efficiently",es:"empacar una maleta eficientemente",emoji:"🧳"},{en:"wash a car",es:"lavar un carro",emoji:"🚙"},{en:"walk a dog",es:"pasear un perro",emoji:"🐕"},{en:"train a dog",es:"entrenar un perro",emoji:"🐕‍🦺"},{en:"groom a pet",es:"asear una mascota",emoji:"🐩"}];
+
+const canSelected = new Set();
+const coSelections = {}; // en -> 'could' | 'couldnt'
+
+const canChipsEl = document.getElementById('canChips');
+const canCounterEl = document.getElementById('canCounter');
+const couldCounterEl = document.getElementById('couldCounter');
+
+ABILITIES.forEach(opt=>{
+  const chip = document.createElement('span');
+  chip.className = 'chip selectable';
+  chip.textContent = opt.emoji+' '+opt.en+' ('+opt.es+')';
+  chip.dataset.search = (opt.en+' '+opt.es).toLowerCase();
+  chip.addEventListener('click', ()=>{
+    if(canSelected.has(opt.en)){ canSelected.delete(opt.en); chip.classList.remove('selected'); }
+    else { canSelected.add(opt.en); chip.classList.add('selected'); }
+    canCounterEl.textContent = canSelected.size+'/200';
+  });
+  canChipsEl.appendChild(chip);
+});
+
+const couldListEl = document.getElementById('couldList');
+const couldScrollEl = document.createElement('div');
+couldScrollEl.className = 'couldscroll';
+couldListEl.appendChild(couldScrollEl);
+
+ABILITIES.forEach(opt=>{
+  const row = document.createElement('div');
+  row.className = 'couldrow';
+  row.dataset.search = (opt.en+' '+opt.es).toLowerCase();
+  const label = document.createElement('span');
+  label.className = 'clabel';
+  label.textContent = opt.emoji+' '+opt.en+' ('+opt.es+')';
+  const toggles = document.createElement('div');
+  toggles.className = 'ctoggles';
+  const yesBtn = document.createElement('button');
+  yesBtn.className = 'togglebtn yes';
+  yesBtn.textContent = 'Podía (Could)';
+  const noBtn = document.createElement('button');
+  noBtn.className = 'togglebtn no';
+  noBtn.textContent = "No podía (Couldn't)";
+  function refreshCoCounter(){
+    couldCounterEl.textContent = Object.keys(coSelections).length+'/200';
+  }
+  yesBtn.addEventListener('click', ()=>{
+    if(coSelections[opt.en]==='could'){ delete coSelections[opt.en]; yesBtn.classList.remove('active'); }
+    else { coSelections[opt.en]='could'; yesBtn.classList.add('active'); noBtn.classList.remove('active'); }
+    refreshCoCounter();
+  });
+  noBtn.addEventListener('click', ()=>{
+    if(coSelections[opt.en]==='couldnt'){ delete coSelections[opt.en]; noBtn.classList.remove('active'); }
+    else { coSelections[opt.en]='couldnt'; noBtn.classList.add('active'); yesBtn.classList.remove('active'); }
+    refreshCoCounter();
+  });
+  toggles.appendChild(yesBtn);
+  toggles.appendChild(noBtn);
+  row.appendChild(label);
+  row.appendChild(toggles);
+  couldScrollEl.appendChild(row);
+});
+
+/* search filters */
+document.getElementById('canSearch').addEventListener('input', (e)=>{
+  const q = e.target.value.trim().toLowerCase();
+  canChipsEl.querySelectorAll('.chip').forEach(chip=>{
+    chip.classList.toggle('hidden', q.length>0 && !chip.dataset.search.includes(q));
+  });
+});
+document.getElementById('couldSearch').addEventListener('input', (e)=>{
+  const q = e.target.value.trim().toLowerCase();
+  couldScrollEl.querySelectorAll('.couldrow').forEach(row=>{
+    row.classList.toggle('hidden', q.length>0 && !row.dataset.search.includes(q));
+  });
+});
+
+function getLevel(total){
+  if(total>=80) return {emoji:'🏆', label:'SUPERHÉROE LEGENDARIO (LEGENDARY SUPERHERO)'};
+  if(total>=40) return {emoji:'🥇', label:'SÚPER HÉROE (SUPERHERO)'};
+  if(total>=15) return {emoji:'🥈', label:'HÉROE EN ENTRENAMIENTO (HERO IN TRAINING)'};
+  if(total>=1)  return {emoji:'🥉', label:'HÉROE PRINCIPIANTE (BEGINNER HERO)'};
+  return {emoji:'🌱', label:'A PUNTO DE EMPEZAR (ABOUT TO START)'};
+}
+
+document.getElementById('btnGenerateCard').addEventListener('click',()=>{
+  const name = document.getElementById('studentNameInput').value.trim() || 'Mi nombre (My name)';
+  const age = document.getElementById('studentAgeInput').value.trim();
+  const canList = ABILITIES.filter(o=>canSelected.has(o.en));
+  const couldYes = ABILITIES.filter(o=>coSelections[o.en]==='could');
+  const couldNo = ABILITIES.filter(o=>coSelections[o.en]==='couldnt');
+
+  const canHtml = canList.length>0
+    ? canList.map(o=>'<li>'+o.emoji+' I can '+o.en+'. (Puedo '+o.es+'.)</li>').join('')
+    : '<li>Selecciona al menos una habilidad arriba (Select at least one ability above).</li>';
+
+  const couldItems = [];
+  couldYes.forEach(o=> couldItems.push('<li>'+o.emoji+' I could '+o.en+'. (Podía '+o.es+'.)</li>'));
+  couldNo.forEach(o=> couldItems.push('<li class="wrong-side">'+o.emoji+" I couldn't "+o.en+'. (No podía '+o.es+'.)</li>'));
+  const couldHtml = couldItems.length>0
+    ? couldItems.join('')
+    : '<li>Marca al menos una opción arriba (Mark at least one option above).</li>';
+
+  const total = canList.length + couldYes.length + couldNo.length;
+  const level = getLevel(total);
+  const ageText = age ? ' · 🎂 '+age+' '+(age==='1' ? 'año (year)' : 'años (years)') : '';
+
+  document.getElementById('superCardResult').innerHTML =
+    '<div class="supercard" id="cardToDownload7"><div class="supercard-inner">'
+    + '<span class="supercard-banner">🎓 Can & Could · Grado 7°'+ageText+'</span>'
+    + '<h3>🦸 '+name+'\'s Superpowers</h3>'
+    + '<span class="sclevel"'+(level.label.length>26 ? ' style="font-size:.72rem;"' : '')+'>'+level.emoji+' '+level.label+'</span>'
+    + '<div class="scstats">'
+    +   '<div class="scstat"><b>'+canList.length+'</b>CAN ✅</div>'
+    +   '<div class="scstat"><b>'+couldYes.length+'</b>COULD 🕰️</div>'
+    +   '<div class="scstat"><b>'+couldNo.length+'</b>COULDN\'T 🚫</div>'
+    + '</div>'
+    + '<div class="scsection"><div class="sclabel">✅ NOW I CAN (AHORA PUEDO)</div><ul>'+canHtml+'</ul></div>'
+    + '<div class="scsection"><div class="sclabel">🕰️ WHEN I WAS LITTLE (CUANDO ERA PEQUEÑO/A)</div><ul>'+couldHtml+'</ul></div>'
+    + '<div class="scfooter">📋 Copia esta tarjeta como texto con el botón de abajo y envíasela a tu profesor por WhatsApp. (Copy this card as text using the button below and send it to your teacher via WhatsApp.)</div>'
+    + '</div></div>'
+    + '<button class="finishbtn copybtn" id="copyBtn7">📋 Copiar tarjeta como texto (Copy card as text)</button>';
+  const resultEl = document.getElementById('superCardResult');
+  if(resultEl.scrollIntoView){ resultEl.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+  const canTextList = canList.length>0
+    ? canList.map((o,i)=>(i+1)+'. ✅ I can '+o.en+'. (Puedo '+o.es+'.)').join('\n')
+    : 'Selecciona al menos una habilidad arriba (Select at least one ability above).';
+  const couldTextItems = [];
+  couldYes.forEach(o=> couldTextItems.push('🕰️ I could '+o.en+'. (Podía '+o.es+'.)'));
+  couldNo.forEach(o=> couldTextItems.push("🚫 I couldn't "+o.en+'. (No podía '+o.es+'.)'));
+  const couldTextList = couldTextItems.length>0
+    ? couldTextItems.map((line,i)=>(i+1)+'. '+line).join('\n')
+    : 'Marca al menos una opción arriba (Mark at least one option above).';
+
+  const cardText =
+    '🎓 Can & Could · Grado 7°'+ageText+'\n'
+    + '🦸 '+name+'\'s Superpowers\n'
+    + level.emoji+' '+level.label+'\n\n'
+    + 'CAN ✅ '+canList.length+' · COULD 🕰️ '+couldYes.length+' · COULDN\'T 🚫 '+couldNo.length+'\n\n'
+    + '✅ NOW I CAN (AHORA PUEDO)\n'+canTextList+'\n\n'
+    + '🕰️ WHEN I WAS LITTLE (CUANDO ERA PEQUEÑO/A)\n'+couldTextList;
+
+  document.getElementById('copyBtn7').addEventListener('click', function(){
+    copyCardAsText(cardText, this);
+  });
+});
+
+/* ============ GRADE TABS ============ */
+document.querySelectorAll('.gtabbtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.gtabbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.subpage').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.grade).classList.add('active');
+  });
+});
+
+/* ============ NESTED QUESTION TABS (GRADE 9) ============ */
+document.querySelectorAll('.qtabbtn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.qtabbtn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.qsubpage').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.q).classList.add('active');
+  });
+});
+
+/* ============ GRADE 9 - PAST SIMPLE (5 QUESTIONS, 100 OPTIONS EACH) ============ */
+const Q1ACTIONS = [{base:"wake up early",past:"woke up early",es:"me desperté temprano",emoji:"⏰"},{base:"get up early",past:"got up early",es:"me levanté temprano",emoji:"🛏️"},{base:"take a shower",past:"took a shower",es:"me duché",emoji:"🚿"},{base:"brush my teeth",past:"brushed my teeth",es:"me cepillé los dientes",emoji:"🪥"},{base:"eat breakfast",past:"ate breakfast",es:"desayuné",emoji:"🍳"},{base:"drink coffee",past:"drank coffee",es:"tomé café",emoji:"☕"},{base:"drink juice",past:"drank juice",es:"tomé jugo",emoji:"🧃"},{base:"make breakfast",past:"made breakfast",es:"preparé el desayuno",emoji:"🍽️"},{base:"go to school",past:"went to school",es:"fui a la escuela",emoji:"🏫"},{base:"go to work",past:"went to work",es:"fui al trabajo",emoji:"💼"},{base:"take the bus",past:"took the bus",es:"tomé el bus",emoji:"🚌"},{base:"ride my bike",past:"rode my bike",es:"monté en bicicleta",emoji:"🚲"},{base:"drive to work",past:"drove to work",es:"manejé al trabajo",emoji:"🚗"},{base:"walk to school",past:"walked to school",es:"caminé a la escuela",emoji:"🚶"},{base:"study English",past:"studied English",es:"estudié inglés",emoji:"📖"},{base:"do homework",past:"did homework",es:"hice tareas",emoji:"📝"},{base:"write an essay",past:"wrote an essay",es:"escribí un ensayo",emoji:"✍️"},{base:"read a book",past:"read a book",es:"leí un libro",emoji:"📚"},{base:"take a test",past:"took a test",es:"presenté un examen",emoji:"📄"},{base:"speak in class",past:"spoke in class",es:"hablé en clase",emoji:"🗣️"},{base:"ask a question",past:"asked a question",es:"hice una pregunta",emoji:"❓"},{base:"answer a question",past:"answered a question",es:"respondí una pregunta",emoji:"💬"},{base:"meet a friend",past:"met a friend",es:"me encontré con un amigo",emoji:"🤝"},{base:"talk on the phone",past:"talked on the phone",es:"hablé por teléfono",emoji:"📱"},{base:"send a message",past:"sent a message",es:"envié un mensaje",emoji:"💌"},{base:"watch TV",past:"watched TV",es:"vi televisión",emoji:"📺"},{base:"watch a movie",past:"watched a movie",es:"vi una película",emoji:"🎬"},{base:"listen to music",past:"listened to music",es:"escuché música",emoji:"🎧"},{base:"play video games",past:"played video games",es:"jugué videojuegos",emoji:"🎮"},{base:"play soccer",past:"played soccer",es:"jugué fútbol",emoji:"⚽"},{base:"play basketball",past:"played basketball",es:"jugué baloncesto",emoji:"🏀"},{base:"play chess",past:"played chess",es:"jugué ajedrez",emoji:"♟️"},{base:"swim in the pool",past:"swam in the pool",es:"nadé en la piscina",emoji:"🏊"},{base:"run in the park",past:"ran in the park",es:"corrí en el parque",emoji:"🏃"},{base:"go to the gym",past:"went to the gym",es:"fui al gimnasio",emoji:"🏋️"},{base:"do exercise",past:"did exercise",es:"hice ejercicio",emoji:"🤸"},{base:"ride a horse",past:"rode a horse",es:"monté a caballo",emoji:"🐎"},{base:"go shopping",past:"went shopping",es:"fui de compras",emoji:"🛍️"},{base:"buy new clothes",past:"bought new clothes",es:"compré ropa nueva",emoji:"👕"},{base:"spend money",past:"spent money",es:"gasté dinero",emoji:"💸"},{base:"pay the bill",past:"paid the bill",es:"pagué la cuenta",emoji:"🧾"},{base:"cook dinner",past:"cooked dinner",es:"cociné la cena",emoji:"🍳"},{base:"bake a cake",past:"baked a cake",es:"horneé un pastel",emoji:"🎂"},{base:"eat lunch",past:"ate lunch",es:"almorcé",emoji:"🍽️"},{base:"eat dinner",past:"ate dinner",es:"cené",emoji:"🍝"},{base:"drink water",past:"drank water",es:"tomé agua",emoji:"💧"},{base:"wash the dishes",past:"washed the dishes",es:"lavé los platos",emoji:"🍽️"},{base:"clean my room",past:"cleaned my room",es:"limpié mi cuarto",emoji:"🧹"},{base:"do the laundry",past:"did the laundry",es:"lavé la ropa",emoji:"🧺"},{base:"iron my clothes",past:"ironed my clothes",es:"planché mi ropa",emoji:"👔"},{base:"make my bed",past:"made my bed",es:"tendí mi cama",emoji:"🛏️"},{base:"feed the dog",past:"fed the dog",es:"alimenté al perro",emoji:"🐶"},{base:"walk the dog",past:"walked the dog",es:"paseé al perro",emoji:"🐕"},{base:"take care of my pet",past:"took care of my pet",es:"cuidé a mi mascota",emoji:"🐾"},{base:"water the plants",past:"watered the plants",es:"regué las plantas",emoji:"🌱"},{base:"visit my grandparents",past:"visited my grandparents",es:"visité a mis abuelos",emoji:"👵"},{base:"call my mom",past:"called my mom",es:"llamé a mi mamá",emoji:"📞"},{base:"help my parents",past:"helped my parents",es:"ayudé a mis padres",emoji:"🙌"},{base:"take photos",past:"took photos",es:"tomé fotos",emoji:"📷"},{base:"post on social media",past:"posted on social media",es:"publiqué en redes sociales",emoji:"📱"},{base:"take a nap",past:"took a nap",es:"tomé una siesta",emoji:"😴"},{base:"go to bed early",past:"went to bed early",es:"me acosté temprano",emoji:"🌙"},{base:"sleep well",past:"slept well",es:"dormí bien",emoji:"😴"},{base:"draw a picture",past:"drew a picture",es:"dibujé un dibujo",emoji:"🎨"},{base:"paint a wall",past:"painted a wall",es:"pinté una pared",emoji:"🖌️"},{base:"sing a song",past:"sang a song",es:"canté una canción",emoji:"🎤"},{base:"dance at a party",past:"danced at a party",es:"bailé en una fiesta",emoji:"💃"},{base:"play the guitar",past:"played the guitar",es:"toqué la guitarra",emoji:"🎸"},{base:"play the piano",past:"played the piano",es:"toqué el piano",emoji:"🎹"},{base:"write a song",past:"wrote a song",es:"escribí una canción",emoji:"🎵"},{base:"take an online class",past:"took an online class",es:"tomé una clase virtual",emoji:"💻"},{base:"use the computer",past:"used the computer",es:"usé el computador",emoji:"🖥️"},{base:"check my email",past:"checked my email",es:"revisé mi correo",emoji:"📧"},{base:"surf the internet",past:"surfed the internet",es:"navegué en internet",emoji:"🌐"},{base:"lose my keys",past:"lost my keys",es:"perdí mis llaves",emoji:"🔑"},{base:"find my phone",past:"found my phone",es:"encontré mi teléfono",emoji:"📱"},{base:"forget my homework",past:"forgot my homework",es:"olvidé mi tarea",emoji:"😅"},{base:"break a plate",past:"broke a plate",es:"rompí un plato",emoji:"🍽️"},{base:"fall down the stairs",past:"fell down the stairs",es:"me caí por las escaleras",emoji:"🪜"},{base:"hurt my leg",past:"hurt my leg",es:"me lastimé la pierna",emoji:"🤕"},{base:"feel sick",past:"felt sick",es:"me sentí enfermo",emoji:"🤒"},{base:"go to the doctor",past:"went to the doctor",es:"fui al médico",emoji:"🏥"},{base:"take medicine",past:"took medicine",es:"tomé medicina",emoji:"💊"},{base:"get better",past:"got better",es:"mejoré",emoji:"😊"},{base:"win a game",past:"won a game",es:"gané un juego",emoji:"🏆"},{base:"lose a game",past:"lost a game",es:"perdí un juego",emoji:"😞"},{base:"score a goal",past:"scored a goal",es:"anoté un gol",emoji:"⚽"},{base:"throw the ball",past:"threw the ball",es:"lancé la pelota",emoji:"🏐"},{base:"catch the ball",past:"caught the ball",es:"atrapé la pelota",emoji:"🥎"},{base:"fly to another city",past:"flew to another city",es:"volé a otra ciudad",emoji:"✈️"},{base:"pack my suitcase",past:"packed my suitcase",es:"empaqué mi maleta",emoji:"🧳"},{base:"meet new people",past:"met new people",es:"conocí gente nueva",emoji:"🧑‍🤝‍🧑"},{base:"make new friends",past:"made new friends",es:"hice nuevos amigos",emoji:"🫂"},{base:"tell a joke",past:"told a joke",es:"conté un chiste",emoji:"😂"},{base:"laugh a lot",past:"laughed a lot",es:"me reí mucho",emoji:"😆"},{base:"get angry",past:"got angry",es:"me enojé",emoji:"😠"},{base:"get bored",past:"got bored",es:"me aburrí",emoji:"😑"},{base:"have fun",past:"had fun",es:"me divertí",emoji:"🥳"},{base:"fix my bike",past:"fixed my bike",es:"arreglé mi bicicleta",emoji:"🔧"},{base:"finish my homework",past:"finished my homework",es:"terminé mi tarea",emoji:"🏁"}];
+const Q2ACTIONS = [{base:"sleep late",past:"slept late",es:"dormí hasta tarde",emoji:"😴"},{base:"stay in bed all morning",past:"stayed in bed all morning",es:"me quedé en la cama toda la mañana",emoji:"🛌"},{base:"watch cartoons",past:"watched cartoons",es:"vi caricaturas",emoji:"📺"},{base:"have a big breakfast",past:"had a big breakfast",es:"desayuné en grande",emoji:"🥞"},{base:"go to the mall",past:"went to the mall",es:"fui al centro comercial",emoji:"🏬"},{base:"go to the movies",past:"went to the movies",es:"fui al cine",emoji:"🎬"},{base:"go to a party",past:"went to a party",es:"fui a una fiesta",emoji:"🎉"},{base:"dance all night",past:"danced all night",es:"bailé toda la noche",emoji:"💃"},{base:"sleep over at a friend's house",past:"slept over at a friend's house",es:"me quedé a dormir en casa de un amigo",emoji:"🛏️"},{base:"play video games all day",past:"played video games all day",es:"jugué videojuegos todo el día",emoji:"🎮"},{base:"go to the beach",past:"went to the beach",es:"fui a la playa",emoji:"🏖️"},{base:"go to the pool",past:"went to the pool",es:"fui a la piscina",emoji:"🏊"},{base:"go to the park",past:"went to the park",es:"fui al parque",emoji:"🌳"},{base:"have a picnic",past:"had a picnic",es:"hice un picnic",emoji:"🧺"},{base:"ride a bicycle",past:"rode a bicycle",es:"monté en bicicleta",emoji:"🚲"},{base:"go for a walk",past:"went for a walk",es:"salí a caminar",emoji:"🚶"},{base:"go hiking",past:"went hiking",es:"hice senderismo",emoji:"🥾"},{base:"go camping",past:"went camping",es:"fui a acampar",emoji:"🏕️"},{base:"go fishing",past:"went fishing",es:"fui a pescar",emoji:"🎣"},{base:"watch a soccer match",past:"watched a soccer match",es:"vi un partido de fútbol",emoji:"⚽"},{base:"go to a concert",past:"went to a concert",es:"fui a un concierto",emoji:"🎤"},{base:"listen to live music",past:"listened to live music",es:"escuché música en vivo",emoji:"🎶"},{base:"visit a museum",past:"visited a museum",es:"visité un museo",emoji:"🏛️"},{base:"visit relatives",past:"visited relatives",es:"visité a mis parientes",emoji:"👨‍👩‍👧"},{base:"have a barbecue",past:"had a barbecue",es:"hice un asado",emoji:"🍖"},{base:"cook a special meal",past:"cooked a special meal",es:"cociné una comida especial",emoji:"🍲"},{base:"bake cookies",past:"baked cookies",es:"horneé galletas",emoji:"🍪"},{base:"wash the car",past:"washed the car",es:"lavé el carro",emoji:"🚗"},{base:"clean the whole house",past:"cleaned the whole house",es:"limpié toda la casa",emoji:"🧽"},{base:"do the grocery shopping",past:"did the grocery shopping",es:"hice el mercado",emoji:"🛒"},{base:"go to the market",past:"went to the market",es:"fui al mercado",emoji:"🥬"},{base:"buy new shoes",past:"bought new shoes",es:"compré zapatos nuevos",emoji:"👟"},{base:"buy a video game",past:"bought a video game",es:"compré un videojuego",emoji:"🕹️"},{base:"play board games",past:"played board games",es:"jugué juegos de mesa",emoji:"🎲"},{base:"play cards",past:"played cards",es:"jugué cartas",emoji:"🃏"},{base:"do a puzzle",past:"did a puzzle",es:"armé un rompecabezas",emoji:"🧩"},{base:"paint a picture",past:"painted a picture",es:"pinté un cuadro",emoji:"🖼️"},{base:"read a comic book",past:"read a comic book",es:"leí una historieta",emoji:"📖"},{base:"write in a journal",past:"wrote in a journal",es:"escribí en mi diario",emoji:"📔"},{base:"take a long nap",past:"took a long nap",es:"tomé una siesta larga",emoji:"😴"},{base:"relax on the sofa",past:"relaxed on the sofa",es:"descansé en el sofá",emoji:"🛋️"},{base:"watch a series",past:"watched a series",es:"vi una serie",emoji:"📺"},{base:"binge-watch a show",past:"binge-watched a show",es:"vi varios episodios seguidos",emoji:"🍿"},{base:"video call a friend",past:"video called a friend",es:"hice una videollamada con un amigo",emoji:"📹"},{base:"chat online",past:"chatted online",es:"chateé en línea",emoji:"💬"},{base:"post photos online",past:"posted photos online",es:"publiqué fotos en línea",emoji:"📸"},{base:"take selfies",past:"took selfies",es:"me tomé selfies",emoji:"🤳"},{base:"go to a birthday party",past:"went to a birthday party",es:"fui a una fiesta de cumpleaños",emoji:"🎂"},{base:"celebrate with friends",past:"celebrated with friends",es:"celebré con mis amigos",emoji:"🥳"},{base:"blow out candles",past:"blew out candles",es:"apagué las velas",emoji:"🕯️"},{base:"eat cake",past:"ate cake",es:"comí pastel",emoji:"🍰"},{base:"drink soda",past:"drank soda",es:"tomé gaseosa",emoji:"🥤"},{base:"order pizza",past:"ordered pizza",es:"pedí pizza",emoji:"🍕"},{base:"eat at a restaurant",past:"ate at a restaurant",es:"comí en un restaurante",emoji:"🍽️"},{base:"try a new restaurant",past:"tried a new restaurant",es:"probé un restaurante nuevo",emoji:"🍜"},{base:"watch a horror movie",past:"watched a horror movie",es:"vi una película de terror",emoji:"👻"},{base:"watch a comedy",past:"watched a comedy",es:"vi una comedia",emoji:"😂"},{base:"tell jokes",past:"told jokes",es:"conté chistes",emoji:"😆"},{base:"play a prank",past:"played a prank",es:"hice una broma",emoji:"🤪"},{base:"go skateboarding",past:"went skateboarding",es:"monté en patineta",emoji:"🛹"},{base:"go rollerblading",past:"went rollerblading",es:"monté en patines",emoji:"🛼"},{base:"fly a kite",past:"flew a kite",es:"volé una cometa",emoji:"🪁"},{base:"play with a ball",past:"played with a ball",es:"jugué con una pelota",emoji:"⚽"},{base:"go to a water park",past:"went to a water park",es:"fui a un parque acuático",emoji:"🌊"},{base:"swim in the sea",past:"swam in the sea",es:"nadé en el mar",emoji:"🌊"},{base:"build a sandcastle",past:"built a sandcastle",es:"construí un castillo de arena",emoji:"🏰"},{base:"collect seashells",past:"collected seashells",es:"recogí conchas",emoji:"🐚"},{base:"watch the sunset",past:"watched the sunset",es:"vi el atardecer",emoji:"🌅"},{base:"go horseback riding",past:"went horseback riding",es:"monté a caballo",emoji:"🐎"},{base:"go to a farm",past:"went to a farm",es:"fui a una finca",emoji:"🚜"},{base:"feed the animals",past:"fed the animals",es:"alimenté a los animales",emoji:"🐓"},{base:"play with a puppy",past:"played with a puppy",es:"jugué con un cachorro",emoji:"🐶"},{base:"go to a family reunion",past:"went to a family reunion",es:"fui a una reunión familiar",emoji:"👪"},{base:"meet my cousins",past:"met my cousins",es:"me reuní con mis primos",emoji:"🧑‍🤝‍🧑"},{base:"help cook lunch",past:"helped cook lunch",es:"ayudé a cocinar el almuerzo",emoji:"👩‍🍳"},{base:"set the table",past:"set the table",es:"puse la mesa",emoji:"🍽️"},{base:"sweep the floor",past:"swept the floor",es:"barrí el piso",emoji:"🧹"},{base:"mow the lawn",past:"mowed the lawn",es:"corté el césped",emoji:"🌿"},{base:"plant flowers",past:"planted flowers",es:"sembré flores",emoji:"🌷"},{base:"water the garden",past:"watered the garden",es:"regué el jardín",emoji:"💧"},{base:"fix something at home",past:"fixed something at home",es:"arreglé algo en casa",emoji:"🔧"},{base:"organize my room",past:"organized my room",es:"organicé mi cuarto",emoji:"🗄️"},{base:"donate old clothes",past:"donated old clothes",es:"doné ropa vieja",emoji:"👕"},{base:"sell old toys",past:"sold old toys",es:"vendí juguetes viejos",emoji:"🧸"},{base:"go to church",past:"went to church",es:"fui a la iglesia",emoji:"⛪"},{base:"volunteer at a shelter",past:"volunteered at a shelter",es:"fui voluntario en un albergue",emoji:"🤲"},{base:"do arts and crafts",past:"did arts and crafts",es:"hice manualidades",emoji:"✂️"},{base:"make a craft project",past:"made a craft project",es:"hice un proyecto de manualidades",emoji:"🎨"},{base:"learn a new song",past:"learned a new song",es:"aprendí una canción nueva",emoji:"🎵"},{base:"practice a musical instrument",past:"practiced a musical instrument",es:"practiqué un instrumento musical",emoji:"🎻"},{base:"record a video",past:"recorded a video",es:"grabé un video",emoji:"🎥"},{base:"edit a video",past:"edited a video",es:"edité un video",emoji:"🎬"},{base:"upload a video",past:"uploaded a video",es:"subí un video",emoji:"⬆️"},{base:"go bowling",past:"went bowling",es:"fui a jugar bolos",emoji:"🎳"},{base:"go roller skating",past:"went roller skating",es:"fui a patinar",emoji:"⛸️"},{base:"play mini golf",past:"played mini golf",es:"jugué mini golf",emoji:"⛳"},{base:"go to an amusement park",past:"went to an amusement park",es:"fui a un parque de diversiones",emoji:"🎡"},{base:"ride a roller coaster",past:"rode a roller coaster",es:"me subí a la montaña rusa",emoji:"🎢"},{base:"visit a zoo",past:"visited a zoo",es:"visité un zoológico",emoji:"🦁"},{base:"visit an aquarium",past:"visited an aquarium",es:"visité un acuario",emoji:"🐠"}];
+const Q3ACTIONS = [{base:"study for an exam",past:"studied for an exam",es:"estudié para un examen",emoji:"📖"},{base:"have a meeting",past:"had a meeting",es:"tuve una reunión",emoji:"🗂️"},{base:"argue with my brother",past:"argued with my brother",es:"discutí con mi hermano",emoji:"😤"},{base:"clean the whole house",past:"cleaned the whole house",es:"limpié toda la casa",emoji:"🧽"},{base:"go to a doctor's appointment",past:"went to a doctor's appointment",es:"fui a una cita médica",emoji:"🩺"},{base:"get a haircut",past:"got a haircut",es:"me corté el pelo",emoji:"💇"},{base:"return a book to the library",past:"returned a book to the library",es:"devolví un libro a la biblioteca",emoji:"📚"},{base:"borrow money",past:"borrowed money",es:"pedí dinero prestado",emoji:"💵"},{base:"lend my pen",past:"lent my pen",es:"presté mi lapicero",emoji:"🖊️"},{base:"miss the bus",past:"missed the bus",es:"perdí el bus",emoji:"🚌"},{base:"arrive late to school",past:"arrived late to school",es:"llegué tarde a la escuela",emoji:"⏰"},{base:"stay up late studying",past:"stayed up late studying",es:"me quedé despierto estudiando",emoji:"🌙"},{base:"finish a project",past:"finished a project",es:"terminé un proyecto",emoji:"✅"},{base:"start a new hobby",past:"started a new hobby",es:"empecé un nuevo pasatiempo",emoji:"🎯"},{base:"join a club",past:"joined a club",es:"me uní a un club",emoji:"👥"},{base:"practice for a competition",past:"practiced for a competition",es:"practiqué para una competencia",emoji:"🏅"},{base:"take a quiz",past:"took a quiz",es:"presenté un quiz",emoji:"📝"},{base:"give a class presentation",past:"gave a class presentation",es:"di una presentación en clase",emoji:"🎤"},{base:"work on a group project",past:"worked on a group project",es:"trabajé en un proyecto grupal",emoji:"🤝"},{base:"email my teacher",past:"emailed my teacher",es:"le escribí un correo a mi profesor",emoji:"📧"},{base:"print my homework",past:"printed my homework",es:"imprimí mi tarea",emoji:"🖨️"},{base:"lose my notebook",past:"lost my notebook",es:"perdí mi cuaderno",emoji:"📓"},{base:"buy school supplies",past:"bought school supplies",es:"compré útiles escolares",emoji:"✏️"},{base:"go to the dentist",past:"went to the dentist",es:"fui al dentista",emoji:"🦷"},{base:"wait in line",past:"waited in line",es:"hice fila",emoji:"🚶‍♂️"},{base:"run an errand",past:"ran an errand",es:"hice una diligencia",emoji:"🏃"},{base:"pick up a package",past:"picked up a package",es:"recogí un paquete",emoji:"📦"},{base:"go to the bank",past:"went to the bank",es:"fui al banco",emoji:"🏦"},{base:"withdraw money",past:"withdrew money",es:"retiré dinero",emoji:"💰"},{base:"deposit money",past:"deposited money",es:"deposité dinero",emoji:"🏧"},{base:"pay a bill",past:"paid a bill",es:"pagué una factura",emoji:"🧾"},{base:"repair my backpack",past:"repaired my backpack",es:"reparé mi mochila",emoji:"🎒"},{base:"charge my laptop",past:"charged my laptop",es:"cargué mi computador",emoji:"🔋"},{base:"lose my umbrella",past:"lost my umbrella",es:"perdí mi paraguas",emoji:"☔"},{base:"get caught in the rain",past:"got caught in the rain",es:"me mojé con la lluvia",emoji:"🌧️"},{base:"catch a cold",past:"caught a cold",es:"me resfrié",emoji:"🤧"},{base:"stay home sick",past:"stayed home sick",es:"me quedé en casa enfermo",emoji:"🤒"},{base:"take a make-up class",past:"took a make-up class",es:"tomé una clase de recuperación",emoji:"📘"},{base:"tutor a classmate",past:"tutored a classmate",es:"le di tutoría a un compañero",emoji:"🧑‍🏫"},{base:"get extra help after class",past:"got extra help after class",es:"recibí ayuda extra después de clase",emoji:"🙋"},{base:"volunteer at school",past:"volunteered at school",es:"fui voluntario en la escuela",emoji:"🤲"},{base:"organize the classroom",past:"organized the classroom",es:"organicé el salón",emoji:"🗄️"},{base:"decorate a bulletin board",past:"decorated a bulletin board",es:"decoré una cartelera",emoji:"📌"},{base:"compete in a spelling bee",past:"competed in a spelling bee",es:"competí en un concurso de ortografía",emoji:"🔤"},{base:"attend a school assembly",past:"attended a school assembly",es:"asistí a una asamblea escolar",emoji:"🏫"},{base:"watch an educational video",past:"watched an educational video",es:"vi un video educativo",emoji:"🎥"},{base:"do a science experiment",past:"did a science experiment",es:"hice un experimento de ciencias",emoji:"🧪"},{base:"build a science project",past:"built a science project",es:"armé un proyecto de ciencias",emoji:"🔬"},{base:"interview someone for a project",past:"interviewed someone for a project",es:"entrevisté a alguien para un proyecto",emoji:"🎙️"},{base:"record a podcast",past:"recorded a podcast",es:"grabé un pódcast",emoji:"🎧"},{base:"design a poster",past:"designed a poster",es:"diseñé un afiche",emoji:"🖼️"},{base:"edit a document",past:"edited a document",es:"edité un documento",emoji:"💻"},{base:"type an essay",past:"typed an essay",es:"escribí un ensayo en el computador",emoji:"⌨️"},{base:"upload homework online",past:"uploaded homework online",es:"subí la tarea en línea",emoji:"☁️"},{base:"attend an online meeting",past:"attended an online meeting",es:"asistí a una reunión virtual",emoji:"💻"},{base:"miss a deadline",past:"missed a deadline",es:"no cumplí una fecha límite",emoji:"⏳"},{base:"meet a deadline",past:"met a deadline",es:"cumplí una fecha límite",emoji:"🎯"},{base:"apologize to a friend",past:"apologized to a friend",es:"le pedí disculpas a un amigo",emoji:"🙏"},{base:"make up with a friend",past:"made up with a friend",es:"hice las paces con un amigo",emoji:"🤗"},{base:"share my lunch",past:"shared my lunch",es:"compartí mi almuerzo",emoji:"🥪"},{base:"lend my notes",past:"lent my notes",es:"presté mis apuntes",emoji:"📔"},{base:"copy notes from a classmate",past:"copied notes from a classmate",es:"copié apuntes de un compañero",emoji:"📝"},{base:"attend a parent-teacher meeting",past:"attended a parent-teacher meeting",es:"asistí a una reunión de padres",emoji:"👨‍👩‍👧"},{base:"get good grades",past:"got good grades",es:"saqué buenas notas",emoji:"💯"},{base:"get a bad grade",past:"got a bad grade",es:"saqué una mala nota",emoji:"😟"},{base:"improve my grade",past:"improved my grade",es:"mejoré mi nota",emoji:"📈"},{base:"redo an assignment",past:"redid an assignment",es:"rehíce una tarea",emoji:"🔁"},{base:"ask for extra time",past:"asked for extra time",es:"pedí más tiempo",emoji:"⏱️"},{base:"go to bed late every night",past:"went to bed late every night",es:"me acosté tarde todas las noches",emoji:"🌙"},{base:"wake up tired",past:"woke up tired",es:"me desperté cansado",emoji:"😪"},{base:"eat a snack between classes",past:"ate a snack between classes",es:"comí un refrigerio entre clases",emoji:"🍎"},{base:"share a snack with a friend",past:"shared a snack with a friend",es:"compartí un refrigerio con un amigo",emoji:"🍪"},{base:"play a sport at recess",past:"played a sport at recess",es:"jugué un deporte en el descanso",emoji:"🏃"},{base:"break my pencil",past:"broke my pencil",es:"se me rompió el lápiz",emoji:"✏️"},{base:"forget my uniform",past:"forgot my uniform",es:"olvidé mi uniforme",emoji:"👕"},{base:"lose a game piece",past:"lost a game piece",es:"perdí una ficha del juego",emoji:"🎲"},{base:"win a class contest",past:"won a class contest",es:"gané un concurso de la clase",emoji:"🏆"},{base:"help a classmate with homework",past:"helped a classmate with homework",es:"ayudé a un compañero con la tarea",emoji:"🙌"},{base:"study with a friend",past:"studied with a friend",es:"estudié con un amigo",emoji:"📖"},{base:"review my notes",past:"reviewed my notes",es:"repasé mis apuntes",emoji:"🔍"},{base:"make flashcards",past:"made flashcards",es:"hice tarjetas de estudio",emoji:"🗂️"},{base:"memorize a poem",past:"memorized a poem",es:"memoricé un poema",emoji:"📜"},{base:"recite a poem in class",past:"recited a poem in class",es:"recité un poema en clase",emoji:"🎭"},{base:"write a report",past:"wrote a report",es:"escribí un informe",emoji:"📄"},{base:"submit an assignment",past:"submitted an assignment",es:"entregué una tarea",emoji:"📤"},{base:"check my grades online",past:"checked my grades online",es:"revisé mis notas en línea",emoji:"💻"},{base:"talk to the counselor",past:"talked to the counselor",es:"hablé con el orientador",emoji:"🧑‍💼"},{base:"resolve a conflict",past:"resolved a conflict",es:"resolví un conflicto",emoji:"🤝"},{base:"stand up for a friend",past:"stood up for a friend",es:"defendí a un amigo",emoji:"🛡️"},{base:"get in trouble",past:"got in trouble",es:"me metí en problemas",emoji:"😬"},{base:"behave well in class",past:"behaved well in class",es:"me porté bien en clase",emoji:"😇"},{base:"follow the rules",past:"followed the rules",es:"seguí las reglas",emoji:"📋"},{base:"break a rule",past:"broke a rule",es:"rompí una regla",emoji:"🚫"},{base:"clean the classroom",past:"cleaned the classroom",es:"limpié el salón",emoji:"🧹"},{base:"water the school garden",past:"watered the school garden",es:"regué el jardín de la escuela",emoji:"🌱"},{base:"collect recycling",past:"collected recycling",es:"recogí material reciclable",emoji:"♻️"},{base:"go on a short field trip",past:"went on a short field trip",es:"fui a una salida escolar corta",emoji:"🚌"},{base:"take the stairs instead of the elevator",past:"took the stairs instead of the elevator",es:"subí por las escaleras en vez del ascensor",emoji:"🪜"},{base:"carry heavy books",past:"carried heavy books",es:"cargué libros pesados",emoji:"📚"},{base:"find a lost item",past:"found a lost item",es:"encontré un objeto perdido",emoji:"🔍"}];
+const Q4ACTIONS = [{base:"move to a new house",past:"moved to a new house",es:"me mudé a una casa nueva",emoji:"🏠"},{base:"start a new school term",past:"started a new school term",es:"empecé un nuevo periodo escolar",emoji:"🏫"},{base:"change schools",past:"changed schools",es:"cambié de escuela",emoji:"🏫"},{base:"get a new pet",past:"got a new pet",es:"conseguí una mascota nueva",emoji:"🐾"},{base:"adopt a puppy",past:"adopted a puppy",es:"adopté un cachorro",emoji:"🐶"},{base:"paint my room",past:"painted my room",es:"pinté mi cuarto",emoji:"🎨"},{base:"redecorate my room",past:"redecorated my room",es:"redecoré mi cuarto",emoji:"🛋️"},{base:"have a school festival",past:"had a school festival",es:"tuvimos un festival escolar",emoji:"🎪"},{base:"go on a field trip",past:"went on a field trip",es:"fui a una excursión",emoji:"🚌"},{base:"take a big exam",past:"took a big exam",es:"presenté un examen grande",emoji:"📝"},{base:"finish a big school project",past:"finished a big school project",es:"terminé un proyecto escolar grande",emoji:"✅"},{base:"join a new sports team",past:"joined a new sports team",es:"me uní a un nuevo equipo deportivo",emoji:"⚽"},{base:"get a part-time job",past:"got a part-time job",es:"conseguí un trabajo de medio tiempo",emoji:"💼"},{base:"quit a job",past:"quit a job",es:"renuncié a un trabajo",emoji:"🚪"},{base:"get a promotion",past:"got a promotion",es:"me ascendieron",emoji:"📈"},{base:"have a job interview",past:"had a job interview",es:"tuve una entrevista de trabajo",emoji:"🧑‍💼"},{base:"sign up for a course",past:"signed up for a course",es:"me inscribí en un curso",emoji:"📋"},{base:"start learning guitar",past:"started learning guitar",es:"empecé a aprender guitarra",emoji:"🎸"},{base:"break my arm",past:"broke my arm",es:"me rompí el brazo",emoji:"🦴"},{base:"have surgery",past:"had surgery",es:"me operaron",emoji:"🏥"},{base:"recover from an illness",past:"recovered from an illness",es:"me recuperé de una enfermedad",emoji:"💪"},{base:"get braces",past:"got braces",es:"me pusieron brackets",emoji:"😬"},{base:"get glasses",past:"got glasses",es:"me mandaron a usar gafas",emoji:"👓"},{base:"donate blood",past:"donated blood",es:"doné sangre",emoji:"🩸"},{base:"give a big presentation",past:"gave a big presentation",es:"di una presentación importante",emoji:"🎤"},{base:"win a competition",past:"won a competition",es:"gané una competencia",emoji:"🏆"},{base:"lose a competition",past:"lost a competition",es:"perdí una competencia",emoji:"😞"},{base:"organize an event",past:"organized an event",es:"organicé un evento",emoji:"📅"},{base:"attend a wedding",past:"attended a wedding",es:"asistí a una boda",emoji:"💍"},{base:"attend a graduation",past:"attended a graduation",es:"asistí a una graduación",emoji:"🎓"},{base:"graduate from a course",past:"graduated from a course",es:"me gradué de un curso",emoji:"🎓"},{base:"visit a new city",past:"visited a new city",es:"visité una ciudad nueva",emoji:"🏙️"},{base:"take a short trip",past:"took a short trip",es:"hice un viaje corto",emoji:"🧳"},{base:"stay at a hotel",past:"stayed at a hotel",es:"me quedé en un hotel",emoji:"🏨"},{base:"meet a new teacher",past:"met a new teacher",es:"conocí a un profesor nuevo",emoji:"🧑‍🏫"},{base:"start a diet",past:"started a diet",es:"empecé una dieta",emoji:"🥗"},{base:"join a gym",past:"joined a gym",es:"me inscribí en un gimnasio",emoji:"🏋️"},{base:"run my first race",past:"ran my first race",es:"corrí mi primera carrera",emoji:"🏃"},{base:"learn to swim",past:"learned to swim",es:"aprendí a nadar",emoji:"🏊"},{base:"learn to cook",past:"learned to cook",es:"aprendí a cocinar",emoji:"👨‍🍳"},{base:"plan a surprise party",past:"planned a surprise party",es:"planeé una fiesta sorpresa",emoji:"🎉"},{base:"throw a surprise party",past:"threw a surprise party",es:"hice una fiesta sorpresa",emoji:"🎊"},{base:"babysit my little cousin",past:"babysat my little cousin",es:"cuidé a mi primito",emoji:"👶"},{base:"take care of a sick relative",past:"took care of a sick relative",es:"cuidé a un familiar enfermo",emoji:"🤒"},{base:"visit someone in the hospital",past:"visited someone in the hospital",es:"visité a alguien en el hospital",emoji:"🏥"},{base:"say goodbye to a friend who moved",past:"said goodbye to a friend who moved",es:"me despedí de un amigo que se mudó",emoji:"👋"},{base:"welcome a new student",past:"welcomed a new student",es:"le di la bienvenida a un estudiante nuevo",emoji:"🙋"},{base:"start a book club",past:"started a book club",es:"empecé un club de lectura",emoji:"📚"},{base:"finish reading a long book",past:"finished reading a long book",es:"terminé de leer un libro largo",emoji:"📖"},{base:"write a short story",past:"wrote a short story",es:"escribí un cuento corto",emoji:"✍️"},{base:"enter a writing contest",past:"entered a writing contest",es:"participé en un concurso de escritura",emoji:"🏆"},{base:"audition for a play",past:"auditioned for a play",es:"hice una audición para una obra",emoji:"🎭"},{base:"act in a school play",past:"acted in a school play",es:"actué en una obra escolar",emoji:"🎬"},{base:"perform in a talent show",past:"performed in a talent show",es:"participé en un show de talentos",emoji:"🎤"},{base:"learn a new dance",past:"learned a new dance",es:"aprendí un baile nuevo",emoji:"💃"},{base:"compete in a dance competition",past:"competed in a dance competition",es:"competí en un concurso de baile",emoji:"🕺"},{base:"start piano lessons",past:"started piano lessons",es:"empecé clases de piano",emoji:"🎹"},{base:"buy a new phone",past:"bought a new phone",es:"compré un teléfono nuevo",emoji:"📱"},{base:"break my phone",past:"broke my phone",es:"se me dañó el teléfono",emoji:"📱"},{base:"repair my computer",past:"repaired my computer",es:"reparé mi computador",emoji:"🖥️"},{base:"build a website",past:"built a website",es:"construí una página web",emoji:"💻"},{base:"start a YouTube channel",past:"started a YouTube channel",es:"empecé un canal de YouTube",emoji:"🎥"},{base:"get more followers online",past:"got more followers online",es:"conseguí más seguidores en línea",emoji:"📈"},{base:"lose my wallet",past:"lost my wallet",es:"perdí mi billetera",emoji:"👛"},{base:"find a new hobby",past:"found a new hobby",es:"encontré un nuevo pasatiempo",emoji:"🎯"},{base:"collect something new",past:"collected something new",es:"empecé una colección nueva",emoji:"🗃️"},{base:"plant a tree",past:"planted a tree",es:"sembré un árbol",emoji:"🌳"},{base:"clean up a park with classmates",past:"cleaned up a park with classmates",es:"limpiamos un parque con compañeros",emoji:"🧹"},{base:"organize a charity drive",past:"organized a charity drive",es:"organicé una campaña benéfica",emoji:"🎗️"},{base:"raise money for a cause",past:"raised money for a cause",es:"recaudé dinero para una causa",emoji:"💰"},{base:"attend a science fair",past:"attended a science fair",es:"asistí a una feria de ciencias",emoji:"🔬"},{base:"win a science fair award",past:"won a science fair award",es:"gané un premio en la feria de ciencias",emoji:"🥇"},{base:"get a bad report card",past:"got a bad report card",es:"recibí un boletín con malas notas",emoji:"📉"},{base:"get an excellent report card",past:"got an excellent report card",es:"recibí un boletín excelente",emoji:"📈"},{base:"meet with a tutor regularly",past:"met with a tutor regularly",es:"me reuní con un tutor regularmente",emoji:"🧑‍🏫"},{base:"change my daily routine",past:"changed my daily routine",es:"cambié mi rutina diaria",emoji:"🔄"},{base:"start going to bed earlier",past:"started going to bed earlier",es:"empecé a acostarme más temprano",emoji:"🌙"},{base:"give up a bad habit",past:"gave up a bad habit",es:"dejé un mal hábito",emoji:"🚫"},{base:"start a new good habit",past:"started a new good habit",es:"empecé un buen hábito nuevo",emoji:"✅"},{base:"have a big argument with a friend",past:"had a big argument with a friend",es:"tuve una discusión grande con un amigo",emoji:"😠"},{base:"make peace after a fight",past:"made peace after a fight",es:"hice las paces después de una pelea",emoji:"🤝"},{base:"start dating someone",past:"started dating someone",es:"empecé a salir con alguien",emoji:"💑"},{base:"break up with someone",past:"broke up with someone",es:"terminé una relación",emoji:"💔"},{base:"celebrate a family event",past:"celebrated a family event",es:"celebramos un evento familiar",emoji:"🎉"},{base:"host relatives at home",past:"hosted relatives at home",es:"recibimos familiares en casa",emoji:"🏠"},{base:"travel for a holiday",past:"traveled for a holiday",es:"viajé por un feriado",emoji:"✈️"},{base:"miss a family event",past:"missed a family event",es:"me perdí un evento familiar",emoji:"😔"},{base:"get a new haircut style",past:"got a new haircut style",es:"me hice un corte de pelo nuevo",emoji:"💇"},{base:"change my style",past:"changed my style",es:"cambié mi estilo",emoji:"👗"},{base:"buy new furniture",past:"bought new furniture",es:"compramos muebles nuevos",emoji:"🛋️"},{base:"fix a problem at home",past:"fixed a problem at home",es:"arreglamos un problema en casa",emoji:"🔧"},{base:"deal with a power outage",past:"dealt with a power outage",es:"enfrenté un apagón",emoji:"💡"},{base:"survive a storm",past:"survived a storm",es:"sobreviví una tormenta",emoji:"⛈️"},{base:"help during an emergency",past:"helped during an emergency",es:"ayudé durante una emergencia",emoji:"🚨"},{base:"learn first aid",past:"learned first aid",es:"aprendí primeros auxilios",emoji:"🩹"},{base:"take a coding class",past:"took a coding class",es:"tomé una clase de programación",emoji:"💻"},{base:"build an app",past:"built an app",es:"construí una aplicación",emoji:"📱"},{base:"enter a robotics competition",past:"entered a robotics competition",es:"participé en una competencia de robótica",emoji:"🤖"},{base:"get a scholarship for a course",past:"got a scholarship for a course",es:"obtuve una beca para un curso",emoji:"🎓"},{base:"improve my English a lot",past:"improved my English a lot",es:"mejoré mucho mi inglés",emoji:"📈"}];
+const Q5ACTIONS = [{base:"travel abroad",past:"traveled abroad",es:"viajé al extranjero",emoji:"✈️"},{base:"visit another country",past:"visited another country",es:"visité otro país",emoji:"🌍"},{base:"visit another continent",past:"visited another continent",es:"visité otro continente",emoji:"🗺️"},{base:"learn to drive",past:"learned to drive",es:"aprendí a manejar",emoji:"🚗"},{base:"get my driver's license",past:"got my driver's license",es:"saqué mi licencia de conducir",emoji:"🪪"},{base:"start a new school year",past:"started a new school year",es:"empecé un año escolar nuevo",emoji:"🏫"},{base:"finish a school year",past:"finished a school year",es:"terminé un año escolar",emoji:"🎓"},{base:"start high school",past:"started high school",es:"empecé el bachillerato",emoji:"🏫"},{base:"finish elementary school",past:"finished elementary school",es:"terminé la primaria",emoji:"🎓"},{base:"meet my best friend",past:"met my best friend",es:"conocí a mi mejor amigo",emoji:"🤝"},{base:"start a new friendship",past:"started a new friendship",es:"empecé una nueva amistad",emoji:"🫂"},{base:"start a relationship",past:"started a relationship",es:"empecé una relación",emoji:"💑"},{base:"end a relationship",past:"ended a relationship",es:"terminé una relación",emoji:"💔"},{base:"win a scholarship",past:"won a scholarship",es:"gané una beca",emoji:"🎓"},{base:"publish a story online",past:"published a story online",es:"publiqué una historia en línea",emoji:"📝"},{base:"write a novel chapter by chapter",past:"wrote a novel chapter by chapter",es:"escribí una novela capítulo a capítulo",emoji:"📚"},{base:"start a small business",past:"started a small business",es:"empecé un pequeño negocio",emoji:"💼"},{base:"sell my own crafts",past:"sold my own crafts",es:"vendí mis propias manualidades",emoji:"🎨"},{base:"open a savings account",past:"opened a savings account",es:"abrí una cuenta de ahorros",emoji:"🏦"},{base:"save money for something special",past:"saved money for something special",es:"ahorré dinero para algo especial",emoji:"💰"},{base:"buy my first bicycle",past:"bought my first bicycle",es:"compré mi primera bicicleta",emoji:"🚲"},{base:"get a new family member",past:"got a new family member",es:"llegó un nuevo miembro a la familia",emoji:"👶"},{base:"become a big brother or sister",past:"became a big brother or sister",es:"me convertí en hermano/a mayor",emoji:"👶"},{base:"welcome a new baby cousin",past:"welcomed a new baby cousin",es:"recibimos un primito nuevo",emoji:"👶"},{base:"lose a family member",past:"lost a family member",es:"perdí a un familiar",emoji:"🕊️"},{base:"say goodbye to a pet",past:"said goodbye to a pet",es:"me despedí de una mascota",emoji:"🐾"},{base:"get a new pet for the family",past:"got a new pet for the family",es:"conseguimos una mascota nueva para la familia",emoji:"🐶"},{base:"recover from a serious illness",past:"recovered from a serious illness",es:"me recuperé de una enfermedad seria",emoji:"💪"},{base:"move to another city",past:"moved to another city",es:"me mudé a otra ciudad",emoji:"🏙️"},{base:"move to another country",past:"moved to another country",es:"me mudé a otro país",emoji:"🌎"},{base:"change schools completely",past:"changed schools completely",es:"cambié completamente de escuela",emoji:"🏫"},{base:"get my first job",past:"got my first job",es:"conseguí mi primer trabajo",emoji:"💼"},{base:"go to summer camp",past:"went to summer camp",es:"fui a un campamento de verano",emoji:"🏕️"},{base:"join a national competition",past:"joined a national competition",es:"participé en una competencia nacional",emoji:"🏆"},{base:"represent my school in a contest",past:"represented my school in a contest",es:"representé a mi escuela en un concurso",emoji:"🎖️"},{base:"win first place in a contest",past:"won first place in a contest",es:"gané el primer lugar en un concurso",emoji:"🥇"},{base:"break a personal record",past:"broke a personal record",es:"rompí un récord personal",emoji:"🏅"},{base:"run a long-distance race",past:"ran a long-distance race",es:"corrí una carrera de larga distancia",emoji:"🏃"},{base:"climb a mountain",past:"climbed a mountain",es:"subí a una montaña",emoji:"⛰️"},{base:"go on a big family trip",past:"went on a big family trip",es:"hicimos un gran viaje familiar",emoji:"🚗"},{base:"fly on a plane for the first time",past:"flew on a plane for the first time",es:"volé en avión por primera vez",emoji:"✈️"},{base:"see the ocean for the first time",past:"saw the ocean for the first time",es:"vi el mar por primera vez",emoji:"🌊"},{base:"learn a new language",past:"learned a new language",es:"aprendí un nuevo idioma",emoji:"🗣️"},{base:"pass an important English exam",past:"passed an important English exam",es:"aprobé un examen importante de inglés",emoji:"✅"},{base:"get a certificate for a course",past:"got a certificate for a course",es:"obtuve un certificado de un curso",emoji:"📜"},{base:"start learning an instrument",past:"started learning an instrument",es:"empecé a aprender un instrumento",emoji:"🎻"},{base:"give my first concert",past:"gave my first concert",es:"di mi primer concierto",emoji:"🎤"},{base:"act in my first play",past:"acted in my first play",es:"actué en mi primera obra",emoji:"🎭"},{base:"change my favorite hobby",past:"changed my favorite hobby",es:"cambié de pasatiempo favorito",emoji:"🎯"},{base:"start collecting something",past:"started collecting something",es:"empecé a coleccionar algo",emoji:"🗃️"},{base:"donate to a big cause",past:"donated to a big cause",es:"doné a una gran causa",emoji:"🎗️"},{base:"volunteer for a whole year",past:"volunteered for a whole year",es:"fui voluntario durante todo un año",emoji:"🤲"},{base:"help rebuild after a disaster",past:"helped rebuild after a disaster",es:"ayudé a reconstruir después de un desastre",emoji:"🏗️"},{base:"survive a difficult year",past:"survived a difficult year",es:"superé un año difícil",emoji:"💪"},{base:"overcome a big fear",past:"overcame a big fear",es:"superé un gran miedo",emoji:"🦁"},{base:"change schools for a better opportunity",past:"changed schools for a better opportunity",es:"cambié de escuela por una mejor oportunidad",emoji:"🏫"},{base:"get braces removed",past:"got my braces removed",es:"me quitaron los brackets",emoji:"😁"},{base:"have a major surgery",past:"had a major surgery",es:"me hicieron una cirugía importante",emoji:"🏥"},{base:"recover fully from an injury",past:"recovered fully from an injury",es:"me recuperé completamente de una lesión",emoji:"🩹"},{base:"break a bone",past:"broke a bone",es:"me fracturé un hueso",emoji:"🦴"},{base:"go through a big growth spurt",past:"went through a big growth spurt",es:"crecí mucho en estatura",emoji:"📏"},{base:"change my appearance a lot",past:"changed my appearance a lot",es:"cambié mucho mi apariencia",emoji:"🪞"},{base:"get my first smartphone",past:"got my first smartphone",es:"conseguí mi primer teléfono inteligente",emoji:"📱"},{base:"get my own computer",past:"got my own computer",es:"conseguí mi propio computador",emoji:"💻"},{base:"build my first website",past:"built my first website",es:"construí mi primera página web",emoji:"🌐"},{base:"start my own YouTube channel",past:"started my own YouTube channel",es:"empecé mi propio canal de YouTube",emoji:"🎥"},{base:"reach a big number of followers",past:"reached a big number of followers",es:"alcancé un número grande de seguidores",emoji:"📈"},{base:"go viral online",past:"went viral online",es:"me hice viral en internet",emoji:"🔥"},{base:"delete all my social media",past:"deleted all my social media",es:"eliminé todas mis redes sociales",emoji:"🗑️"},{base:"take a long break from screens",past:"took a long break from screens",es:"tomé un descanso largo de las pantallas",emoji:"📵"},{base:"read more than ten books",past:"read more than ten books",es:"leí más de diez libros",emoji:"📚"},{base:"finish a whole book series",past:"finished a whole book series",es:"terminé una saga de libros completa",emoji:"📖"},{base:"watch every episode of a show",past:"watched every episode of a show",es:"vi todos los episodios de una serie",emoji:"📺"},{base:"attend a huge concert",past:"attended a huge concert",es:"asistí a un concierto enorme",emoji:"🎤"},{base:"meet a celebrity",past:"met a celebrity",es:"conocí a una celebridad",emoji:"🌟"},{base:"get an autograph",past:"got an autograph",es:"conseguí un autógrafo",emoji:"✍️"},{base:"go to a big sports event",past:"went to a big sports event",es:"fui a un evento deportivo grande",emoji:"🏟️"},{base:"watch a championship game",past:"watched a championship game",es:"vi un partido de campeonato",emoji:"🏆"},{base:"join a school leadership team",past:"joined a school leadership team",es:"me uní al equipo de liderazgo escolar",emoji:"🧑‍🎓"},{base:"become class president",past:"became class president",es:"fui elegido presidente de curso",emoji:"🗳️"},{base:"give a speech to the school",past:"gave a speech to the school",es:"di un discurso a la escuela",emoji:"🎙️"},{base:"organize a school campaign",past:"organized a school campaign",es:"organicé una campaña escolar",emoji:"📢"},{base:"get an award for good behavior",past:"got an award for good behavior",es:"recibí un premio por buen comportamiento",emoji:"🏅"},{base:"get an award for academic excellence",past:"got an award for academic excellence",es:"recibí un premio de excelencia académica",emoji:"🎓"},{base:"host a foreign exchange student",past:"hosted a foreign exchange student",es:"recibí a un estudiante de intercambio",emoji:"🌍"},{base:"become a foreign exchange student",past:"became a foreign exchange student",es:"fui estudiante de intercambio",emoji:"🎒"},{base:"live in a different city for a while",past:"lived in a different city for a while",es:"viví en otra ciudad por un tiempo",emoji:"🏙️"},{base:"celebrate a big family anniversary",past:"celebrated a big family anniversary",es:"celebramos un gran aniversario familiar",emoji:"🎊"},{base:"attend a family wedding",past:"attended a family wedding",es:"asistí a una boda familiar",emoji:"💒"},{base:"become a godparent's godchild",past:"became a godparent's godchild",es:"me convertí en ahijado/a",emoji:"👨‍👩‍👧"},{base:"get confirmed at church",past:"got confirmed at church",es:"hice mi confirmación en la iglesia",emoji:"⛪"},{base:"go through a religious ceremony",past:"went through a religious ceremony",es:"viví una ceremonia religiosa",emoji:"🕊️"},{base:"meet with a counselor regularly",past:"met with a counselor regularly",es:"me reuní con un consejero regularmente",emoji:"🧑‍⚕️"},{base:"learn to manage my emotions better",past:"learned to manage my emotions better",es:"aprendí a manejar mejor mis emociones",emoji:"🧘"},{base:"build more self-confidence",past:"built more self-confidence",es:"gané más confianza en mí mismo",emoji:"💪"},{base:"make a big decision",past:"made a big decision",es:"tomé una decisión importante",emoji:"🤔"},{base:"change my mind about my career goal",past:"changed my mind about my career goal",es:"cambié de opinión sobre mi meta profesional",emoji:"🎯"},{base:"set a big goal for myself",past:"set a big goal for myself",es:"me propuse una gran meta",emoji:"🎯"},{base:"achieve a personal goal",past:"achieved a personal goal",es:"logré una meta personal",emoji:"✅"},{base:"grow a lot as a person",past:"grew a lot as a person",es:"crecí mucho como persona",emoji:"🌱"}];
+
+function getLevel9(total){
+  if(total>=80) return {emoji:'🏆', label:'MAESTRO DEL PASADO (PAST MASTER)'};
+  if(total>=40) return {emoji:'🥇', label:'EXPERTO EN PAST SIMPLE (SIMPLE PAST EXPERT)'};
+  if(total>=15) return {emoji:'🥈', label:'VIAJERO EN ENTRENAMIENTO (TRAVELER IN TRAINING)'};
+  if(total>=1)  return {emoji:'🥉', label:'PRINCIPIANTE DEL PASADO (PAST BEGINNER)'};
+  return {emoji:'🌱', label:'A PUNTO DE EMPEZAR (ABOUT TO START)'};
+}
+
+function initPastQuestion(qId, actions, timeEnLower, timeEnCap, timeEs, bannerEn, bannerEs){
+  const selections = {}; // base -> 'did' | 'didnt'
+  const listEl = document.getElementById(qId+'List');
+  const scrollEl = document.createElement('div');
+  scrollEl.className = 'couldscroll';
+  listEl.appendChild(scrollEl);
+  const counterEl = document.getElementById(qId+'Counter');
+
+  function refreshCounter(){
+    counterEl.textContent = Object.keys(selections).length+'/'+actions.length;
+  }
+
+  actions.forEach(opt=>{
+    const row = document.createElement('div');
+    row.className = 'couldrow';
+    row.dataset.search = (opt.base+' '+opt.es).toLowerCase();
+    const label = document.createElement('span');
+    label.className = 'clabel';
+    label.textContent = opt.emoji+' '+opt.base+' ('+opt.es+')';
+    const toggles = document.createElement('div');
+    toggles.className = 'ctoggles';
+    const yesBtn = document.createElement('button');
+    yesBtn.className = 'togglebtn yes';
+    yesBtn.textContent = 'Sí lo hice (Did it)';
+    const noBtn = document.createElement('button');
+    noBtn.className = 'togglebtn no';
+    noBtn.textContent = "No lo hice (Didn't)";
+    yesBtn.addEventListener('click', ()=>{
+      if(selections[opt.base]==='did'){ delete selections[opt.base]; yesBtn.classList.remove('active'); }
+      else { selections[opt.base]='did'; yesBtn.classList.add('active'); noBtn.classList.remove('active'); }
+      refreshCounter();
+    });
+    noBtn.addEventListener('click', ()=>{
+      if(selections[opt.base]==='didnt'){ delete selections[opt.base]; noBtn.classList.remove('active'); }
+      else { selections[opt.base]='didnt'; noBtn.classList.add('active'); yesBtn.classList.remove('active'); }
+      refreshCounter();
+    });
+    toggles.appendChild(yesBtn);
+    toggles.appendChild(noBtn);
+    row.appendChild(label);
+    row.appendChild(toggles);
+    scrollEl.appendChild(row);
+  });
+
+  document.getElementById(qId+'Search').addEventListener('input', (e)=>{
+    const q = e.target.value.trim().toLowerCase();
+    scrollEl.querySelectorAll('.couldrow').forEach(row=>{
+      row.classList.toggle('hidden', q.length>0 && !row.dataset.search.includes(q));
+    });
+  });
+
+  refreshCounter();
+
+  // return this question's data so the combined card can read it later
+  return { qId, actions, selections, timeEnLower, timeEnCap, timeEs, bannerEn, bannerEs };
+}
+
+const PASTQUESTIONS = [
+  initPastQuestion('q1', Q1ACTIONS, 'yesterday', 'Yesterday', 'Ayer', 'What did you do yesterday?', '¿Qué hiciste ayer?'),
+  initPastQuestion('q2', Q2ACTIONS, 'last weekend', 'Last weekend', 'El fin de semana pasado', 'What did you do last weekend?', '¿Qué hiciste el fin de semana pasado?'),
+  initPastQuestion('q3', Q3ACTIONS, 'last week', 'Last week', 'La semana pasada', 'What did you do last week?', '¿Qué hiciste la semana pasada?'),
+  initPastQuestion('q4', Q4ACTIONS, 'last month', 'Last month', 'El mes pasado', 'What did you do last month?', '¿Qué hiciste el mes pasado?'),
+  initPastQuestion('q5', Q5ACTIONS, 'last year', 'Last year', 'El año pasado', 'What did you do last year?', '¿Qué hiciste el año pasado?')
+];
+
+/* ============ ONE COMBINED CARD FOR ALL 5 QUESTIONS ============ */
+document.getElementById('btnGenerateCard9').addEventListener('click', ()=>{
+  const name = document.getElementById('studentNameInput9').value.trim() || 'Mi nombre (My name)';
+  const age = document.getElementById('studentAgeInput9').value.trim();
+
+  let grandDid = 0, grandDidnt = 0;
+  let anySelection = false;
+  const sectionsHtml = [];
+  const sectionsText = [];
+
+  PASTQUESTIONS.forEach(q=>{
+    const didList = q.actions.filter(o=>q.selections[o.base]==='did');
+    const didntList = q.actions.filter(o=>q.selections[o.base]==='didnt');
+    if(didList.length===0 && didntList.length===0) return; // skip questions with no answers
+    anySelection = true;
+    grandDid += didList.length;
+    grandDidnt += didntList.length;
+
+    const affHtml = didList.length>0
+      ? didList.map(o=>'<li>'+o.emoji+' '+q.timeEnCap+' I '+o.past+'. ('+q.timeEs+' yo '+o.es+'.)</li>').join('')
+      : '';
+    const negHtml = didntList.length>0
+      ? didntList.map(o=>'<li class="wrong-side">'+o.emoji+' '+q.timeEnCap+" I didn't "+o.base+'. ('+q.timeEs+' yo no '+o.es+'.)</li>').join('')
+      : '';
+    const qaItems = [];
+    didList.forEach(o=> qaItems.push('<li>'+o.emoji+' Did you '+o.base+' '+q.timeEnLower+'? <b>Yes, I did.</b> (¿Lo hiciste '+q.timeEs.toLowerCase()+'? Sí, lo hice.)</li>'));
+    didntList.forEach(o=> qaItems.push('<li class="wrong-side">'+o.emoji+' Did you '+o.base+' '+q.timeEnLower+"? <b>No, I didn't.</b> (¿Lo hiciste "+q.timeEs.toLowerCase()+'? No, no lo hice.)</li>'));
+    const qaHtml = qaItems.join('');
+
+    sectionsHtml.push(
+      '<div class="scsection" style="border-top:2px solid rgba(255,255,255,0.25);padding-top:12px;">'
+      + '<div class="sclabel" style="font-size:.85rem;">'+q.bannerEn+' ('+q.bannerEs+') · '+didList.length+' ✅ · '+didntList.length+' ❌</div>'
+      + (affHtml ? '<ul>'+affHtml+'</ul>' : '')
+      + (negHtml ? '<ul>'+negHtml+'</ul>' : '')
+      + (qaHtml ? '<ul>'+qaHtml+'</ul>' : '')
+      + '</div>'
+    );
+
+    const affText = didList.map(o=>o.emoji+' '+q.timeEnCap+' I '+o.past+'. ('+q.timeEs+' yo '+o.es+'.)');
+    const negText = didntList.map(o=>o.emoji+' '+q.timeEnCap+" I didn't "+o.base+'. ('+q.timeEs+' yo no '+o.es+'.)');
+    const markedText = [...affText, ...negText].map((line,i)=>(i+1)+'. '+line);
+    const qaText = [];
+    didList.forEach(o=> qaText.push(o.emoji+' Did you '+o.base+' '+q.timeEnLower+'? Yes, I did. (¿Lo hiciste '+q.timeEs.toLowerCase()+'? Sí, lo hice.)'));
+    didntList.forEach(o=> qaText.push(o.emoji+' Did you '+o.base+' '+q.timeEnLower+"? No, I didn't. (¿Lo hiciste "+q.timeEs.toLowerCase()+'? No, no lo hice.)'));
+
+    sectionsText.push(
+      q.bannerEn+' ('+q.bannerEs+') · '+didList.length+' ✅ · '+didntList.length+' ❌\n'
+      + [...markedText, ...qaText].join('\n')
+    );
+  });
+
+  if(!anySelection){
+    sectionsHtml.push('<div class="scsection"><ul><li>Marca al menos una acción en alguna de las 5 pestañas arriba (Mark at least one action in any of the 5 tabs above).</li></ul></div>');
+    sectionsText.push('Marca al menos una acción en alguna de las 5 pestañas arriba (Mark at least one action in any of the 5 tabs above).');
+  }
+
+  const total = grandDid + grandDidnt;
+  const level = getLevel9(total);
+  const ageText = age ? ' · 🎂 '+age+' '+(age==='1' ? 'año (year)' : 'años (years)') : '';
+
+  document.getElementById('superCardResult9').innerHTML =
+    '<div class="supercard" id="cardToDownload9"><div class="supercard-inner">'
+    + '<span class="supercard-banner">🎓 Past Simple · Las 5 preguntas · Grado 9°'+ageText+'</span>'
+    + '<h3>🦸 '+name+'\'s Powers</h3>'
+    + '<span class="sclevel"'+(level.label.length>26 ? ' style="font-size:.72rem;"' : '')+'>'+level.emoji+' '+level.label+'</span>'
+    + '<div class="scstats">'
+    +   '<div class="scstat"><b>'+grandDid+'</b>DID ✅</div>'
+    +   '<div class="scstat"><b>'+grandDidnt+'</b>DIDN\'T ❌</div>'
+    +   '<div class="scstat"><b>'+total+'</b>TOTAL 📅</div>'
+    + '</div>'
+    + sectionsHtml.join('')
+    + '<div class="scfooter">📋 Copia esta tarjeta como texto con el botón de abajo y envíasela a tu profesor por WhatsApp. (Copy this card as text using the button below and send it to your teacher via WhatsApp.)</div>'
+    + '</div></div>'
+    + '<button class="finishbtn copybtn" id="copyBtn9">📋 Copiar tarjeta como texto (Copy card as text)</button>';
+  const resultEl = document.getElementById('superCardResult9');
+  if(resultEl.scrollIntoView){ resultEl.scrollIntoView({behavior:'smooth', block:'start'}); }
+
+  const cardText =
+    '🎓 Past Simple · Las 5 preguntas · Grado 9°'+ageText+'\n'
+    + '🦸 '+name+'\'s Powers\n'
+    + level.emoji+' '+level.label+'\n\n'
+    + 'DID ✅ '+grandDid+' · DIDN\'T ❌ '+grandDidnt+' · TOTAL 📅 '+total+'\n\n'
+    + sectionsText.join('\n\n');
+
+  document.getElementById('copyBtn9').addEventListener('click', function(){
+    copyCardAsText(cardText, this);
+  });
+});
+</script>
+</body>
+</html>
